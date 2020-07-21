@@ -61,6 +61,7 @@
     <Compile Include="Orchestration\IQueryWorkspaceContainer.cs" />
     <Compile Include="Orchestration\IResultsView.cs" />
     <Compile Include="Orchestration\IWorkspaceController.cs" />
+    <Compile Include="Orchestration\TabbedResultsViewController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\QueryWorkspaceView.cs">

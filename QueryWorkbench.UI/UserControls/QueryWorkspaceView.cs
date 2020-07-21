@@ -12,15 +12,14 @@ namespace QueryWorkbenchUI.UserControls {
     public partial class QueryWorkspaceView : UserControl, IQueryWorkspace, IDirtyable {
 
         private string _filename;
-
-        private IResultsView _selectedResultsView;
-
+        private readonly TabbedResultsViewController _resultsViewController;
         private IQueryWorkspaceContainer _workspaceContainer;
 
         #region ctors
         public QueryWorkspaceView() {
             InitializeComponent();
             IsDirty = true;
+            _resultsViewController = new TabbedResultsViewController(resultsTab);
         }
 
         public QueryWorkspaceView(Workspace workspaceModel) : this() {
@@ -43,14 +42,7 @@ namespace QueryWorkbenchUI.UserControls {
 
         #region IQueryWorkspace
         public void ApplyFilter() {
-            if (resultsTab.SelectedTab == null) {
-                return;
-            }
-            _selectedResultsView = getResultsPanelView(resultsTab.SelectedTab);
-
-            if (_selectedResultsView != null) {
-                _selectedResultsView.ApplyFilter();
-            }
+            _resultsViewController.ApplyFilter();
         }
 
         public bool Save(IWorkspaceController workspaceController) {
@@ -158,37 +150,9 @@ namespace QueryWorkbenchUI.UserControls {
 
                 var ds = new DataSet();
                 sqlDataAdapter.Fill(ds);
-                bindResults(ds);
+                _resultsViewController.BindResults(ds);
                 mainSplitContainer.Panel2Collapsed = false;
             }
-        }
-
-        private void bindResults(DataSet ds) {
-            resultsTab.TabPages.Clear();
-            var counter = 1;
-            foreach (DataTable dt in ds.Tables) {
-                var newResultTab = new TabPage($"Result #{counter}");
-                resultsTab.TabPages.Add(newResultTab);
-                var resultsPane = new ResultsPaneView(dt)
-                                      .WithDockStyle(DockStyle.Fill)
-                                      .WithContainerIndex(counter - 1)
-                                      .WithResultsCountChangedHandler(ResultsPane_OnResultsCountChanged);
-                newResultTab.Controls.Add(resultsPane);
-                counter++;
-            }
-        }
-
-        private IResultsView getResultsPanelView(TabPage selectedTab) {
-            if (selectedTab == null) {
-                return null;
-            }
-
-            foreach (Control childControl in selectedTab.Controls) {
-                if (childControl is IResultsView) {
-                    return childControl as IResultsView;
-                }
-            }
-            return null;
         }
 
         private string getSQL() {
@@ -226,13 +190,6 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion Misc non-public
 
         #region Control event handlers
-        private void ResultsPane_OnResultsCountChanged(object sender, ResultsCountChangedArgs e) {
-            var tabText = resultsTab.TabPages[e.ContainerIndex].Text;
-            var pipeCharIndex = tabText.IndexOf('|');
-            var preText = pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
-            resultsTab.TabPages[e.ContainerIndex].Text = $"{preText} | rows: {e.NewCount}";
-        }
-
         private void txtQuery_TextChanged(object sender, EventArgs e) {
             IsDirty = true;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
@@ -246,9 +203,6 @@ namespace QueryWorkbenchUI.UserControls {
             IsDirty = true;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
         }
-
-      
-
         #endregion
 
 
