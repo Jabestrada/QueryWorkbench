@@ -27,7 +27,7 @@ namespace QueryWorkBench.UI {
         #region overrides
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             if (_kbShortcuts.ContainsKey(keyData)) {
-                _activeQueryWorkspace = getActiveQueryWorkspace();
+                _activeQueryWorkspace = ActiveQueryWorkspace;
                 _kbShortcuts[keyData].Invoke();
                 return true;
             }
@@ -112,7 +112,7 @@ namespace QueryWorkBench.UI {
         }
 
         private void saveWorkspace() {
-            getActiveQueryWorkspace()?.Save(this);
+            ActiveQueryWorkspace?.Save(this);
         }
 
         #endregion close workspace
@@ -120,7 +120,7 @@ namespace QueryWorkBench.UI {
         #region Run Query, Apply Filter
         private void runQuery() {
             try {
-                getActiveQueryWorkspace()?.RunQuery();
+                ActiveQueryWorkspace?.RunQuery();
             }
             catch (Exception exc) {
                 MessageBox.Show(exc.Message, "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -129,7 +129,7 @@ namespace QueryWorkBench.UI {
 
         private void applyFilter() {
             try {
-                getActiveQueryWorkspace()?.ApplyFilter();
+                ActiveQueryWorkspace?.ApplyFilter();
             }
             catch (Exception exc) {
                 MessageBox.Show(exc.Message);
@@ -166,18 +166,20 @@ namespace QueryWorkBench.UI {
 
 
         private void toggleParametersPane() {
-            getActiveQueryWorkspace()?.ToggleParametersPane();
+            ActiveQueryWorkspace?.ToggleParametersPane();
         }
 
         private void toggleResultsPane() {
-            getActiveQueryWorkspace()?.ToggleResultsPane();
+            ActiveQueryWorkspace?.ToggleResultsPane();
         }
 
-        private IQueryWorkspace getActiveQueryWorkspace() {
-            if (mainTabControl.SelectedTab == null) {
-                return null;
+        private IQueryWorkspace ActiveQueryWorkspace {
+            get {
+                if (mainTabControl.SelectedTab == null) {
+                    return null;
+                }
+                return getQueryWorkspaceReference(mainTabControl.SelectedTab);
             }
-            return getQueryWorkspaceReference(mainTabControl.SelectedTab);
         }
 
         private IQueryWorkspace getQueryWorkspaceReference(Control control) {
@@ -236,17 +238,17 @@ namespace QueryWorkBench.UI {
         }
 
         private void saveWorkspaceToolStripMenuItem_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = getActiveQueryWorkspace();
+            _activeQueryWorkspace = ActiveQueryWorkspace;
             saveWorkspace();
         }
 
         private void closeWorkspaceToolStripMenuItem_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = getActiveQueryWorkspace();
+            _activeQueryWorkspace = ActiveQueryWorkspace;
             closeWorkspace();
         }
 
         private void closeWorkspaceWithoutSavingToolStripMenuItem1_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = getActiveQueryWorkspace();
+            _activeQueryWorkspace = ActiveQueryWorkspace;
             forcedCloseWorkspace();
         }
         #endregion Menu item events
