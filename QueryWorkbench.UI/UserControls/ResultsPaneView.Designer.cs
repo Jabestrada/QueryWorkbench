@@ -24,23 +24,24 @@
         /// </summary>
         private void InitializeComponent() {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.txtOutput = new System.Windows.Forms.TextBox();
-            this.gridResults = new System.Windows.Forms.DataGridView();
-            this.txtFilter = new System.Windows.Forms.TextBox();
             this.panelFilter = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.gridResults = new System.Windows.Forms.DataGridView();
+            this.txtOutput = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridResults)).BeginInit();
             this.panelFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridResults)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -52,18 +53,42 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.txtOutput);
-            this.splitContainer1.Size = new System.Drawing.Size(610, 229);
-            this.splitContainer1.SplitterDistance = 138;
+            this.splitContainer1.Size = new System.Drawing.Size(1627, 546);
+            this.splitContainer1.SplitterDistance = 329;
+            this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 0;
             // 
-            // txtOutput
+            // panelFilter
             // 
-            this.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtOutput.Location = new System.Drawing.Point(0, 0);
-            this.txtOutput.Multiline = true;
-            this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(610, 87);
-            this.txtOutput.TabIndex = 0;
+            this.panelFilter.Controls.Add(this.label1);
+            this.panelFilter.Controls.Add(this.txtFilter);
+            this.panelFilter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelFilter.Location = new System.Drawing.Point(0, 0);
+            this.panelFilter.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.panelFilter.Name = "panelFilter";
+            this.panelFilter.Size = new System.Drawing.Size(1627, 52);
+            this.panelFilter.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 10);
+            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 32);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Filter";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFilter.Location = new System.Drawing.Point(104, 0);
+            this.txtFilter.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(1508, 38);
+            this.txtFilter.TabIndex = 1;
             // 
             // gridResults
             // 
@@ -73,58 +98,43 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gridResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridResults.Location = new System.Drawing.Point(0, 26);
+            this.gridResults.Location = new System.Drawing.Point(0, 62);
+            this.gridResults.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.gridResults.Name = "gridResults";
             this.gridResults.ReadOnly = true;
             this.gridResults.RowHeadersVisible = false;
-            this.gridResults.Size = new System.Drawing.Size(607, 112);
+            this.gridResults.RowHeadersWidth = 102;
+            this.gridResults.Size = new System.Drawing.Size(1619, 267);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
             // 
-            // txtFilter
+            // txtOutput
             // 
-            this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFilter.Location = new System.Drawing.Point(39, 0);
-            this.txtFilter.Name = "txtFilter";
-            this.txtFilter.Size = new System.Drawing.Size(568, 20);
-            this.txtFilter.TabIndex = 1;
-            // 
-            // panelFilter
-            // 
-            this.panelFilter.Controls.Add(this.label1);
-            this.panelFilter.Controls.Add(this.txtFilter);
-            this.panelFilter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelFilter.Location = new System.Drawing.Point(0, 0);
-            this.panelFilter.Name = "panelFilter";
-            this.panelFilter.Size = new System.Drawing.Size(610, 22);
-            this.panelFilter.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Filter";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtOutput.Location = new System.Drawing.Point(0, 0);
+            this.txtOutput.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtOutput.Size = new System.Drawing.Size(1627, 207);
+            this.txtOutput.TabIndex = 0;
             // 
             // ResultsPaneView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
+            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "ResultsPaneView";
-            this.Size = new System.Drawing.Size(610, 229);
+            this.Size = new System.Drawing.Size(1627, 546);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridResults)).EndInit();
             this.panelFilter.ResumeLayout(false);
             this.panelFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridResults)).EndInit();
             this.ResumeLayout(false);
 
         }
