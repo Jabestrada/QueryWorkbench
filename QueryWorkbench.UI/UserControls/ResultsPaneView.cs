@@ -60,14 +60,9 @@ namespace QueryWorkbenchUI.UserControls {
         }
 
         private void writeCurrentCellValue(DataGridViewCellEventArgs e) {
-            var dt = gridResults.DataSource as DataTable;
-            if (dt == null) {
-                return;
-            }
-            if (e.RowIndex > dt.Rows.Count - 1) {
-                return;
-            }
-            txtOutput.Text = dt.Rows[e.RowIndex][e.ColumnIndex].ToString();
+            var dataRowView = ((DataRowView)BindingContext[gridResults.DataSource].Current).Row;
+            var index = dataRowView.Table.Rows.IndexOf(dataRowView);
+            txtOutput.Text = dataRowView.Table.Rows[index][e.ColumnIndex].ToString();
         }
 
         private void gridResults_CellEnter(object sender, DataGridViewCellEventArgs e) {
