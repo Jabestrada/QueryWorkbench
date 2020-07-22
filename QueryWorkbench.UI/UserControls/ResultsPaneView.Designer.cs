@@ -41,7 +41,6 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -53,9 +52,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.txtOutput);
-            this.splitContainer1.Size = new System.Drawing.Size(1627, 546);
-            this.splitContainer1.SplitterDistance = 329;
-            this.splitContainer1.SplitterWidth = 10;
+            this.splitContainer1.Size = new System.Drawing.Size(610, 229);
+            this.splitContainer1.SplitterDistance = 137;
             this.splitContainer1.TabIndex = 0;
             // 
             // panelFilter
@@ -64,18 +62,16 @@
             this.panelFilter.Controls.Add(this.txtFilter);
             this.panelFilter.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelFilter.Location = new System.Drawing.Point(0, 0);
-            this.panelFilter.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.panelFilter.Name = "panelFilter";
-            this.panelFilter.Size = new System.Drawing.Size(1627, 52);
+            this.panelFilter.Size = new System.Drawing.Size(610, 22);
             this.panelFilter.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 10);
-            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label1.Location = new System.Drawing.Point(4, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 32);
+            this.label1.Size = new System.Drawing.Size(29, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Filter";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -84,27 +80,23 @@
             // 
             this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFilter.Location = new System.Drawing.Point(104, 0);
-            this.txtFilter.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.txtFilter.Location = new System.Drawing.Point(39, 0);
             this.txtFilter.Name = "txtFilter";
-            this.txtFilter.Size = new System.Drawing.Size(1508, 38);
+            this.txtFilter.Size = new System.Drawing.Size(568, 20);
             this.txtFilter.TabIndex = 1;
             // 
             // gridResults
             // 
             this.gridResults.AllowUserToAddRows = false;
             this.gridResults.AllowUserToDeleteRows = false;
-            this.gridResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gridResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridResults.Location = new System.Drawing.Point(0, 62);
-            this.gridResults.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.gridResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridResults.Location = new System.Drawing.Point(0, 0);
             this.gridResults.Name = "gridResults";
             this.gridResults.ReadOnly = true;
             this.gridResults.RowHeadersVisible = false;
             this.gridResults.RowHeadersWidth = 102;
-            this.gridResults.Size = new System.Drawing.Size(1619, 267);
+            this.gridResults.Size = new System.Drawing.Size(610, 137);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
             // 
@@ -112,21 +104,19 @@
             // 
             this.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtOutput.Location = new System.Drawing.Point(0, 0);
-            this.txtOutput.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtOutput.Size = new System.Drawing.Size(1627, 207);
+            this.txtOutput.Size = new System.Drawing.Size(610, 88);
             this.txtOutput.TabIndex = 0;
             // 
             // ResultsPaneView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
-            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "ResultsPaneView";
-            this.Size = new System.Drawing.Size(1627, 546);
+            this.Size = new System.Drawing.Size(610, 229);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
