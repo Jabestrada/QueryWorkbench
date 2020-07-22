@@ -3,7 +3,7 @@ using QueryWorkbenchUI.Orchestration;
 using System;
 
 namespace QueryWorkbenchUI {
-    public interface IQueryWorkspace {
+    public interface IQueryWorkspace : IDirtyable {
         event EventHandler<OnSavedEventArgs> OnSaved;
         void RunQuery();
         void ApplyFilter();

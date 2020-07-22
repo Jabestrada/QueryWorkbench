@@ -29,11 +29,11 @@
             this.newWorkspaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openWorkspaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWorkspaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cloneWorkspaceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mrutoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeWorkspaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeWorkspaceWithoutSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.queryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.applyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +50,7 @@
             this.mainTabControl.SelectedIndex = 0;
             this.mainTabControl.Size = new System.Drawing.Size(801, 415);
             this.mainTabControl.TabIndex = 13;
+            this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.mainTabControl_SelectedIndexChanged);
             // 
             // menuStrip1
             // 
@@ -68,11 +69,11 @@
             this.newWorkspaceToolStripMenuItem,
             this.openWorkspaceToolStripMenuItem,
             this.saveWorkspaceToolStripMenuItem,
-            this.toolStripMenuItem1,
+            this.cloneWorkspaceStripMenuItem,
             this.mrutoolStripMenuItem,
             this.toolStripSeparator1,
             this.closeWorkspaceToolStripMenuItem,
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1});
+            this.closeWorkspaceWithoutSavingToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
             this.fileToolStripMenuItem.Text = "Workspace";
@@ -101,12 +102,12 @@
             this.saveWorkspaceToolStripMenuItem.Text = "Save workspace";
             this.saveWorkspaceToolStripMenuItem.Click += new System.EventHandler(this.saveWorkspaceToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem1
+            // cloneWorkspaceStripMenuItem
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
-            this.toolStripMenuItem1.Text = "Clone workspace";
+            this.cloneWorkspaceStripMenuItem.Name = "cloneWorkspaceStripMenuItem";
+            this.cloneWorkspaceStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.cloneWorkspaceStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.cloneWorkspaceStripMenuItem.Text = "Clone workspace";
             // 
             // mrutoolStripMenuItem
             // 
@@ -127,13 +128,13 @@
             this.closeWorkspaceToolStripMenuItem.Text = "Close";
             this.closeWorkspaceToolStripMenuItem.Click += new System.EventHandler(this.closeWorkspaceToolStripMenuItem_Click);
             // 
-            // closeWorkspaceWithoutSavingToolStripMenuItem1
+            // closeWorkspaceWithoutSavingToolStripMenuItem
             // 
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1.Name = "closeWorkspaceWithoutSavingToolStripMenuItem1";
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1.Text = "Close without saving";
-            this.closeWorkspaceWithoutSavingToolStripMenuItem1.Click += new System.EventHandler(this.closeWorkspaceWithoutSavingToolStripMenuItem1_Click);
+            this.closeWorkspaceWithoutSavingToolStripMenuItem.Name = "closeWorkspaceWithoutSavingToolStripMenuItem";
+            this.closeWorkspaceWithoutSavingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.closeWorkspaceWithoutSavingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.closeWorkspaceWithoutSavingToolStripMenuItem.Text = "Close without saving";
+            this.closeWorkspaceWithoutSavingToolStripMenuItem.Click += new System.EventHandler(this.closeWorkspaceWithoutSavingToolStripMenuItem1_Click);
             // 
             // queryToolStripMenuItem
             // 
@@ -148,7 +149,7 @@
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
             this.runToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.runToolStripMenuItem.Text = "Run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
@@ -156,7 +157,7 @@
             // 
             this.applyFilterToolStripMenuItem.Name = "applyFilterToolStripMenuItem";
             this.applyFilterToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.applyFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.applyFilterToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.applyFilterToolStripMenuItem.Text = "Apply Filter";
             this.applyFilterToolStripMenuItem.Click += new System.EventHandler(this.applyFilterToolStripMenuItem_Click);
             // 
@@ -188,11 +189,11 @@
         private System.Windows.Forms.ToolStripMenuItem saveWorkspaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem closeWorkspaceToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem closeWorkspaceWithoutSavingToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem closeWorkspaceWithoutSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem queryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mrutoolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem cloneWorkspaceStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem applyFilterToolStripMenuItem;
     }
 }

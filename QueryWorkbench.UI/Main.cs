@@ -13,7 +13,7 @@ using System.Xml;
 namespace QueryWorkBench.UI {
     public partial class Main : Form, IWorkspaceController {
         private Dictionary<Keys, Action> _kbShortcuts = new Dictionary<Keys, Action>();
-        private IQueryWorkspace _activeQueryWorkspace;
+        //private IQueryWorkspace _activeQueryWorkspace;
 
         private AppState _appState = new AppState();
 
@@ -22,13 +22,17 @@ namespace QueryWorkBench.UI {
             initializeKeyboardShortcuts();
             loadAppState();
             //newTab();
+            refreshUIState();
         }
+
+
 
         #region overrides
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             if (_kbShortcuts.ContainsKey(keyData)) {
-                _activeQueryWorkspace = ActiveQueryWorkspace;
+                //_activeQueryWorkspace = ActiveQueryWorkspace;
                 _kbShortcuts[keyData].Invoke();
+                refreshUIState();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -76,19 +80,24 @@ namespace QueryWorkBench.UI {
         }
 
         private void cloneWorkspace() {
-            if (_activeQueryWorkspace == null) {
+            if (ActiveQueryWorkspace == null) {
                 return;
             }
-            var workspaceModel = _activeQueryWorkspace.CloneModel();
+            var workspaceModel = ActiveQueryWorkspace.CloneModel();
             createNewTab($"Copy of {mainTabControl.SelectedTab.Text}", QueryWorkspaceView.New(workspaceModel));
         }
         private void createNewTab(string title, QueryWorkspaceView workspaceView) {
             var newTab = new QWBTabPage(title);
             var newWorkspace = workspaceView.WithDockStyle(DockStyle.Fill)
                                             .WithContainer(newTab);
+            workspaceView.OnDirtyChanged += WorkspaceView_OnDirtyChanged;
             newTab.SetWorkspace(newWorkspace);
             mainTabControl.TabPages.Add(newTab);
             mainTabControl.SelectedTab = newTab;
+        }
+
+        private void WorkspaceView_OnDirtyChanged(object sender, DirtyChangedEventArgs e) {
+            refreshUIState();
         }
 
         #endregion new, open, clone workspace
@@ -103,10 +112,10 @@ namespace QueryWorkBench.UI {
         }
 
         private void closeWorkspace(bool force) {
-            if (_activeQueryWorkspace == null) {
-                return;
+            if (mainTabControl.TabCount == 0) {
+                Close();
             }
-            if (_activeQueryWorkspace.Close(this, force)) {
+            if (ActiveQueryWorkspace?.Close(this, force) == true) {
                 mainTabControl.TabPages.Remove(mainTabControl.SelectedTab);
             }
         }
@@ -156,6 +165,20 @@ namespace QueryWorkBench.UI {
             _kbShortcuts.Add(Keys.Control | Keys.M, cycleResultsTabs);
         }
 
+        private void refreshUIState() {
+            refreshMenuState();
+        
+        }
+
+        private void refreshMenuState() { 
+            var hasActiveWorkspace = ActiveQueryWorkspace != null;
+            saveWorkspaceToolStripMenuItem.Enabled = ActiveQueryWorkspace?.IsDirty == true;
+            cloneWorkspaceStripMenuItem.Enabled = hasActiveWorkspace;
+            closeWorkspaceToolStripMenuItem.Enabled = hasActiveWorkspace;
+            mrutoolStripMenuItem.Enabled = _appState.MRUConfigList.Items.Count > 0;
+            closeWorkspaceWithoutSavingToolStripMenuItem.Enabled = hasActiveWorkspace;
+        }
+
         private void cycleResultsTabs() {
             Debug.WriteLine("TODO: Cycle results tabs");
         }
@@ -175,7 +198,7 @@ namespace QueryWorkBench.UI {
 
         private IQueryWorkspace ActiveQueryWorkspace {
             get {
-                if (mainTabControl.SelectedTab == null) {
+                if (mainTabControl.TabCount == 0 || mainTabControl.SelectedTab == null) {
                     return null;
                 }
                 return getQueryWorkspaceReference(mainTabControl.SelectedTab);
@@ -238,17 +261,14 @@ namespace QueryWorkBench.UI {
         }
 
         private void saveWorkspaceToolStripMenuItem_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = ActiveQueryWorkspace;
             saveWorkspace();
         }
 
         private void closeWorkspaceToolStripMenuItem_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = ActiveQueryWorkspace;
             closeWorkspace();
         }
 
         private void closeWorkspaceWithoutSavingToolStripMenuItem1_Click(object sender, EventArgs e) {
-            _activeQueryWorkspace = ActiveQueryWorkspace;
             forcedCloseWorkspace();
         }
         #endregion Menu item events
@@ -315,7 +335,6 @@ namespace QueryWorkBench.UI {
                 var mruMenuItem = createMruMenuItem(mruItem);
                 mrutoolStripMenuItem.DropDownItems.Add(mruMenuItem);
             }
-            mrutoolStripMenuItem.Enabled = _appState.MRUConfigList.Items.Count > 0;
         }
 
         private ToolStripMenuItem createMruMenuItem(KeyValuePair<int, string> i) {
@@ -339,6 +358,10 @@ namespace QueryWorkBench.UI {
         #endregion MRU
 
         #region Tabs
+        private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e) {
+            refreshUIState();
+        }
+
         private bool setActiveTabIfLoaded(string workspaceFile) {
             var existingTab = getTabByFilename(workspaceFile);
             if (existingTab == null) {
@@ -374,5 +397,7 @@ namespace QueryWorkBench.UI {
             mainTabControl.SelectedTab = mainTabControl.TabPages[mainTabControl.SelectedIndex == 0 ? mainTabControl.TabCount - 1 : mainTabControl.SelectedIndex - 1];
         }
         #endregion
+
+
     }
 }
