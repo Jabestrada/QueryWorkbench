@@ -89,14 +89,16 @@
             // 
             this.gridResults.AllowUserToAddRows = false;
             this.gridResults.AllowUserToDeleteRows = false;
+            this.gridResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gridResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridResults.Location = new System.Drawing.Point(0, 0);
+            this.gridResults.Location = new System.Drawing.Point(0, 20);
             this.gridResults.Name = "gridResults";
             this.gridResults.ReadOnly = true;
             this.gridResults.RowHeadersVisible = false;
             this.gridResults.RowHeadersWidth = 102;
-            this.gridResults.Size = new System.Drawing.Size(610, 137);
+            this.gridResults.Size = new System.Drawing.Size(610, 117);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
             // 
