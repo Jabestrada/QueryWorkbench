@@ -20,17 +20,9 @@ namespace QueryWorkbenchUI.UserControls {
             _oldCount = _sourceDataTable == null ? 0 : _sourceDataTable.DefaultView.Count;
             _newCount = sourceDataTable.DefaultView.Count;
 
-            _sourceDataTable = sourceDataTable;
-
-            gridResults.DataSource = _sourceDataTable;
-            splitContainer1.Panel1Collapsed = _sourceDataTable.DefaultView.Count == 0;
-            if (splitContainer1.Panel1Collapsed) {
-                splitContainer1.Panel1.Hide();
-            }
-            else {
-                splitContainer1.Panel1.Show();
-            }
+            SetDataSource(sourceDataTable);
         }
+
         public void SetDataSource(DataTable sourceDataTable) {
             _sourceDataTable = sourceDataTable;
 
@@ -38,9 +30,13 @@ namespace QueryWorkbenchUI.UserControls {
             splitContainer1.Panel1Collapsed = _sourceDataTable.DefaultView.Count == 0;
             if (splitContainer1.Panel1Collapsed) {
                 splitContainer1.Panel1.Hide();
+                txtOutput.Text = "No records found";
+                txtOutput.ReadOnly = true;
             }
             else {
                 splitContainer1.Panel1.Show();
+                txtOutput.Clear();
+                txtOutput.ReadOnly = false;
             }
         }
 

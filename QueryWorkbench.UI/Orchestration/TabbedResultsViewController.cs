@@ -32,6 +32,7 @@ namespace QueryWorkbenchUI.Orchestration {
                 }
                 tabPageIndex++;
             }
+
             removeAnyExtraTabs(ds.Tables.Count);
         }
 
