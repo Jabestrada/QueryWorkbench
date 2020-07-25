@@ -31,6 +31,18 @@ namespace QueryWorkbenchUI.UserControls {
                 splitContainer1.Panel1.Show();
             }
         }
+        public void SetDataSource(DataTable sourceDataTable) {
+            _sourceDataTable = sourceDataTable;
+
+            gridResults.DataSource = _sourceDataTable;
+            splitContainer1.Panel1Collapsed = _sourceDataTable.DefaultView.Count == 0;
+            if (splitContainer1.Panel1Collapsed) {
+                splitContainer1.Panel1.Hide();
+            }
+            else {
+                splitContainer1.Panel1.Show();
+            }
+        }
 
         public void ApplyFilter() {
             applyFilter();

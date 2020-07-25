@@ -9,45 +9,64 @@ namespace QueryWorkbenchUI.Orchestration {
             _tabContainer = tabContainer;
         }
 
-        public void BindResults(DataSet ds) {
-            // TODO: Don't always recreate tab pages and ResultsPaneView so that Filters
-            // are retained if user mistakenly executes query rather than apply filters.
-            _tabContainer.TabPages.Clear();
-            var counter = 1;
-            foreach (DataTable dt in ds.Tables) {
-                var newResultTab = new TabPage($"Result #{counter}");
-                _tabContainer.TabPages.Add(newResultTab);
-                var resultsPane = new ResultsPaneView(dt)
-                                      .WithDockStyle(DockStyle.Fill)
-                                      .WithContainerIndex(counter - 1)
-                                      .WithResultsCountChangedHandler(ResultsPane_OnResultsCountChanged);
-                newResultTab.Controls.Add(resultsPane);
-                counter++;
-            }
-        }
-
         public void ApplyFilter() {
             if (_tabContainer.SelectedTab == null) {
                 return;
             }
-            IResultsView selectedResultsView = getResultsPanelView(_tabContainer.SelectedTab);
+
+            IResultsView selectedResultsView = getChildControl<IResultsView>(_tabContainer.SelectedTab);
 
             if (selectedResultsView != null) {
                 selectedResultsView.ApplyFilter();
             }
         }
 
-        private IResultsView getResultsPanelView(TabPage selectedTab) {
-            if (selectedTab == null) {
-                return null;
+        public void BindResults(DataSet ds) {
+            var tabPageIndex = 0;
+            foreach (DataTable dt in ds.Tables) {
+                if (_tabContainer.TabCount > tabPageIndex) {
+                    reuseTabPage(dt, tabPageIndex);
+                }
+                else {
+                    createNewTabPage(dt, tabPageIndex);
+                }
+                tabPageIndex++;
             }
+            removeAnyExtraTabs(ds.Tables.Count);
+        }
 
-            foreach (Control childControl in selectedTab.Controls) {
-                if (childControl is IResultsView) {
-                    return childControl as IResultsView;
+        #region non-public
+        private void createNewTabPage(DataTable sourceDataTable, int tabPageIndex) {
+            var newResultTab = new TabPage($"Result #{tabPageIndex + 1}");
+            _tabContainer.TabPages.Add(newResultTab);
+            var resultsPane = new ResultsPaneView(sourceDataTable)
+                                  .WithDockStyle(DockStyle.Fill)
+                                  .WithContainerIndex(tabPageIndex)
+                                  .WithResultsCountChangedHandler(ResultsPane_OnResultsCountChanged);
+            newResultTab.Controls.Add(resultsPane);
+        }
+
+        private void reuseTabPage(DataTable sourceDataTable, int tabPageIndex) {
+            var resultsPaneView = getChildControl<ResultsPaneView>(_tabContainer.TabPages[tabPageIndex]);
+            resultsPaneView?.SetDataSource(sourceDataTable);
+        }
+
+        private void removeAnyExtraTabs(int dataTableCount) {
+            var extraTabs = _tabContainer.TabCount - dataTableCount;
+            while (extraTabs > 0) {
+                _tabContainer.TabPages.RemoveAt(_tabContainer.TabPages.Count - 1);
+                extraTabs--;
+            }
+        }
+
+        private T getChildControl<T>(Control parentControl) where T : class {
+            T childControl = null;
+            foreach (var control in parentControl.Controls) {
+                if (control is T) {
+                    return control as T;
                 }
             }
-            return null;
+            return childControl;
         }
 
         private void ResultsPane_OnResultsCountChanged(object sender, ResultsCountChangedArgs e) {
@@ -56,5 +75,6 @@ namespace QueryWorkbenchUI.Orchestration {
             var preText = pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
             _tabContainer.TabPages[e.ContainerIndex].Text = $"{preText} | rows: {e.NewCount}";
         }
+        #endregion non-public
     }
 }
