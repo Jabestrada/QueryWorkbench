@@ -1,13 +1,38 @@
-﻿using QueryWorkbenchUI.UserControls;
+﻿using QueryWorkbenchUI.Models;
+using QueryWorkbenchUI.UserControls;
+using QueryWorkbenchUI.UserForms;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace QueryWorkbenchUI.Orchestration {
-    public class TabbedResultsViewController {
+    public class TabbedResultsViewController : IDirtyable {
         private readonly TabControl _tabContainer;
+        private ContextMenu _tabPageContextMenu;
+        private string[] _resultPaneTitles;
+
+        private const char TAB_TITLE_SEPARATOR_CHAR = '|';
+
+
+        public bool IsDirty { get; set; }
+
+        public event EventHandler<DirtyChangedEventArgs> OnDirtyChanged;
+
         public TabbedResultsViewController(TabControl tabContainer) {
             _tabContainer = tabContainer;
+            bindContextMenu();
+
         }
+
+        public IEnumerable<string> GetResultTabTitles() {
+            foreach (TabPage tabPage in _tabContainer.TabPages) {
+                yield return getTabTitle(tabPage);
+            }
+        }
+        
 
         public void ApplyFilter() {
             if (_tabContainer.SelectedTab == null) {
@@ -36,10 +61,46 @@ namespace QueryWorkbenchUI.Orchestration {
             removeAnyExtraTabs(ds.Tables.Count);
         }
 
+        public void BindWorkspaceModel(Workspace workspaceModel) {
+            _resultPaneTitles = workspaceModel.ResultPaneTitles.ToArray();
+        }
+
         #region non-public
+        private void bindContextMenu() {
+            _tabContainer.MouseUp += _tabContainer_MouseUp;
+
+            _tabPageContextMenu = new ContextMenu();
+            var renameTabMenuItem = new MenuItem("Rename tab", new EventHandler(renameTabHandler));
+            _tabPageContextMenu.MenuItems.Add(renameTabMenuItem);
+        }
+
+        private void _tabContainer_MouseUp(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
+                for (int i = 0; i < _tabContainer.TabCount; ++i) {
+                    Rectangle r = _tabContainer.GetTabRect(i);
+                    if (r.Contains(e.Location)) {
+                        _tabContainer.SelectedIndex = i;
+                        _tabPageContextMenu.Show(_tabContainer, e.Location);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void renameTabHandler(object sender, EventArgs e) {
+            var textInputDialog = new TextInputDialog("Results tab text", getTabTitle(_tabContainer.SelectedTab));
+            if (textInputDialog.ShowDialog() == DialogResult.OK) {
+                setTabTitle(_tabContainer.SelectedTab, textInputDialog.Input);
+            }
+        }
+
         private void createNewTabPage(DataTable sourceDataTable, int tabPageIndex) {
-            var newResultTab = new TabPage($"Result #{tabPageIndex + 1}");
+            var tabTitle = _resultPaneTitles != null && tabPageIndex < _resultPaneTitles.Length
+                           ? _resultPaneTitles[tabPageIndex]
+                           : $"Result #{tabPageIndex + 1}";
+            var newResultTab = new TabPage(tabTitle);
             _tabContainer.TabPages.Add(newResultTab);
+
             var resultsPane = new ResultsPaneView(sourceDataTable)
                                   .WithDockStyle(DockStyle.Fill)
                                   .WithContainerIndex(tabPageIndex)
@@ -71,11 +132,33 @@ namespace QueryWorkbenchUI.Orchestration {
         }
 
         private void ResultsPane_OnResultsCountChanged(object sender, ResultsCountChangedArgs e) {
-            var tabText = _tabContainer.TabPages[e.ContainerIndex].Text;
-            var pipeCharIndex = tabText.IndexOf('|');
-            var preText = pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
-            _tabContainer.TabPages[e.ContainerIndex].Text = $"{preText} | rows: {e.NewCount}";
+            var preText = getTabTitle(_tabContainer.TabPages[e.ContainerIndex]);
+            var rowsText = e.NewCount > 1 ? "rows" : "row";
+            _tabContainer.TabPages[e.ContainerIndex]
+                         .Text = $"{preText} {TAB_TITLE_SEPARATOR_CHAR} {e.NewCount} {rowsText}";
+
         }
+
+        private void setTabTitle(TabPage tabPage, string title) {
+            var currentTabTitle = getTabTitle(tabPage);
+            if (currentTabTitle == title.Trim()) {
+                return;
+            }
+            var currentTabTitleRaw = tabPage.Text;
+            var pipeCharIndex = currentTabTitleRaw.IndexOf(TAB_TITLE_SEPARATOR_CHAR);
+            tabPage.Text = pipeCharIndex < 0 ?
+                           title :
+                           $"{title} {tabPage.Text.Substring(pipeCharIndex)}";
+            OnDirtyChanged(this, new DirtyChangedEventArgs(true));
+        }
+
+        private string getTabTitle(TabPage tabPage) {
+            var tabText = tabPage.Text;
+            var pipeCharIndex = tabText.IndexOf(TAB_TITLE_SEPARATOR_CHAR);
+            return pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
+        }
+
+        
         #endregion non-public
     }
 }

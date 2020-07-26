@@ -20,20 +20,20 @@ namespace QueryWorkbenchUI.UserControls {
             InitializeComponent();
             IsDirty = true;
             _resultsViewController = new TabbedResultsViewController(resultsTab);
+            _resultsViewController.OnDirtyChanged += resultsViewController_OnDirtyChanged;
         }
 
         public QueryWorkspaceView(Workspace workspaceModel) : this() {
-            bindModel(workspaceModel);
+            bindWorkspaceModel(workspaceModel);
 
         }
-
 
         public QueryWorkspaceView(string filename) : this() {
             _filename = filename;
             var serializer = new XmlSerializer(typeof(Workspace));
             using (var fileStream = new FileStream(filename, FileMode.Open)) {
                 Workspace workspace = (Workspace)serializer.Deserialize(fileStream);
-                bindModel(workspace);
+                bindWorkspaceModel(workspace);
             }
             IsDirty = false;
         }
@@ -178,30 +178,41 @@ namespace QueryWorkbenchUI.UserControls {
                 ConnectionString = txtConnString.Text,
                 Query = txtQuery.Text
             };
+            foreach (var title in _resultsViewController.GetResultTabTitles()) {
+                workspace.ResultPaneTitles.Add(title);
+            }
             return workspace;
         }
 
-        private void bindModel(Workspace workspaceModel) {
+        private void bindWorkspaceModel(Workspace workspaceModel) {
             txtConnString.Text = workspaceModel.ConnectionString;
             txtQuery.Text = workspaceModel.Query.Replace("\n", Environment.NewLine);
             txtParams.Text = workspaceModel.Parameters.Replace("\n", Environment.NewLine);
+            _resultsViewController.BindWorkspaceModel(workspaceModel);
         }
 
         #endregion Misc non-public
 
         #region Control event handlers
         private void txtQuery_TextChanged(object sender, EventArgs e) {
-            IsDirty = true;
-            OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
+            onDirty(true);
         }
 
         private void txtParams_TextChanged(object sender, EventArgs e) {
-            IsDirty = true;
-            OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
+            onDirty(true);
         }
         private void txtConnString_TextChanged(object sender, EventArgs e) {
-            IsDirty = true;
-            OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
+            onDirty(true);
+
+        }
+        
+        private void resultsViewController_OnDirtyChanged(object sender, DirtyChangedEventArgs e) {
+                onDirty(e.IsDirty);
+        }
+
+        private void onDirty(bool isDirty) {
+            IsDirty = isDirty;
+            OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(isDirty));
         }
         #endregion
 

@@ -79,6 +79,12 @@
     <Compile Include="UserControls\ResultsPaneView.Designer.cs">
       <DependentUpon>ResultsPaneView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserForms\TextInputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserForms\TextInputDialog.Designer.cs">
+      <DependentUpon>TextInputDialog.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\ResultsPaneView.resx">
       <DependentUpon>ResultsPaneView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserForms\TextInputDialog.resx">
+      <DependentUpon>TextInputDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
