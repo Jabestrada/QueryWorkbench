@@ -1,9 +1,9 @@
-﻿using QueryWorkbenchUI.Models;
+﻿using QueryWorkbench.Infrastructure;
+using QueryWorkbench.SqlServer;
+using QueryWorkbenchUI.Models;
 using QueryWorkbenchUI.Orchestration;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -18,6 +18,8 @@ namespace QueryWorkbenchUI.UserControls {
         #region ctors
         public QueryWorkspaceView() {
             InitializeComponent();
+
+
             IsDirty = true;
             _resultsViewController = new TabbedResultsViewController(resultsTab);
             _resultsViewController.OnDirtyChanged += resultsViewController_OnDirtyChanged;
@@ -71,7 +73,11 @@ namespace QueryWorkbenchUI.UserControls {
         }
 
         public void RunQuery() {
-            runQuery();
+            // TODO: Use Factory to create BaseCommandDispatcher type.
+            BaseCommandDispatcher sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text, getQueryParams());
+            var data = sqlCommandDispatcher.RunQuery(getSQL());
+            _resultsViewController.BindResults(data);
+            mainSplitContainer.Panel2Collapsed = false;
         }
 
         public bool Close(IWorkspaceController workspaceController, bool force) {
@@ -102,7 +108,7 @@ namespace QueryWorkbenchUI.UserControls {
             mainSplitContainer.Panel2Collapsed = !mainSplitContainer.Panel2Collapsed;
         }
         public void ToggleParametersPane() {
-            queryAndParametersContainer.Panel2Collapsed = !queryAndParametersContainer.Panel2Collapsed; 
+            queryAndParametersContainer.Panel2Collapsed = !queryAndParametersContainer.Panel2Collapsed;
         }
         #endregion IQueryWorkspace
 
@@ -135,26 +141,6 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion
 
         #region Misc non-public
-        private void runQuery() {
-            using (var sqlConn = new SqlConnection(txtConnString.Text)) {
-                var sqlText = getSQL();
-                var sqlDataAdapter = new SqlDataAdapter(sqlText, sqlConn);
-                var queryParams = getQueryParams();
-                foreach (var qp in queryParams) {
-                    var paramName = qp.Key;
-                    if (!paramName.StartsWith("@")) {
-                        paramName = "@" + paramName;
-                    }
-                    sqlDataAdapter.SelectCommand.Parameters.AddWithValue(paramName, qp.Value);
-                }
-
-                var ds = new DataSet();
-                sqlDataAdapter.Fill(ds);
-                _resultsViewController.BindResults(ds);
-                mainSplitContainer.Panel2Collapsed = false;
-            }
-        }
-
         private string getSQL() {
             return string.IsNullOrWhiteSpace(txtQuery.SelectedText) ? txtQuery.Text : txtQuery.SelectedText;
         }
@@ -205,9 +191,9 @@ namespace QueryWorkbenchUI.UserControls {
             onDirty(true);
 
         }
-        
+
         private void resultsViewController_OnDirtyChanged(object sender, DirtyChangedEventArgs e) {
-                onDirty(e.IsDirty);
+            onDirty(e.IsDirty);
         }
 
         private void onDirty(bool isDirty) {

@@ -120,5 +120,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QueryWorkbench.Infrastructure\QueryWorkbench.Infrastructure.csproj">
+      <Project>{0e7ac13d-1808-49c2-bb59-69d71d2240a8}</Project>
+      <Name>QueryWorkbench.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QueryWorkbench.SqlServer\QueryWorkbench.SqlServer.csproj">
+      <Project>{36fd5656-1f61-40ff-b305-9f61f06c69ab}</Project>
+      <Name>QueryWorkbench.SqlServer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
