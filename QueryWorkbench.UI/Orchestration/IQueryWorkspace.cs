@@ -5,6 +5,8 @@ using System;
 namespace QueryWorkbenchUI {
     public interface IQueryWorkspace : IDirtyable {
         event EventHandler<OnSavedEventArgs> OnSaved;
+
+        Workspace Model { get; }
         void RunQuery();
         void ApplyFilter();
         bool Save(IWorkspaceController workspaceController);

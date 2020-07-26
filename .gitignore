@@ -6,3 +6,6 @@ QueryWorkbench.Infrastructure/bin/
 QueryWorkbench.Infrastructure/obj/
 QueryWorkbench.SqlServer/bin/
 QueryWorkbench.SqlServer/obj/
+packages/
+QueryWorkbench.Tests/bin/
+QueryWorkbench.Tests/obj/

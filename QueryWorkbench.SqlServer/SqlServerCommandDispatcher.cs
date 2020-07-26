@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 namespace QueryWorkbench.SqlServer {
-    public class SqlServerCommandDispatcher : BaseCommandDispatcher {
+    public class SqlServerCommandDispatcher : BaseDbCommandDispatcher {
         public SqlServerCommandDispatcher(string connectionString, Dictionary<string, object> parameters) :
                         base(connectionString, parameters) {
         }

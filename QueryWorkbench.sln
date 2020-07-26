@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkBench.UI", "QueryWorkbench.UI\QueryWorkBench.UI.csproj", "{4B5D1DB5-2353-4A41-9714-873D24F2DC33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.UI", "QueryWorkbench.UI\QueryWorkbench.UI.csproj", "{4B5D1DB5-2353-4A41-9714-873D24F2DC33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.Infrastructure", "QueryWorkbench.Infrastructure\QueryWorkbench.Infrastructure.csproj", "{0E7AC13D-1808-49C2-BB59-69D71D2240A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.SqlServer", "QueryWorkbench.SqlServer\QueryWorkbench.SqlServer.csproj", "{36FD5656-1F61-40FF-B305-9F61F06C69AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.Tests", "QueryWorkbench.Tests\QueryWorkbench.Tests.csproj", "{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{36FD5656-1F61-40FF-B305-9F61F06C69AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36FD5656-1F61-40FF-B305-9F61F06C69AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36FD5656-1F61-40FF-B305-9F61F06C69AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

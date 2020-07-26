@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace QueryWorkbenchUI.Models {
     public class Workspace {
@@ -9,5 +10,12 @@ namespace QueryWorkbenchUI.Models {
         public string Parameters { get; set; }
         public string ConnectionString { get; set; }
         public List<string> ResultPaneTitles { get; set; }
+
+        public bool HasSameValueAs(Workspace other) {
+            return Query == other.Query &&
+                  Parameters == other.Parameters &&
+                  ConnectionString == other.ConnectionString &&
+                  ResultPaneTitles.SequenceEqual(other.ResultPaneTitles);
+        }
     }
 }

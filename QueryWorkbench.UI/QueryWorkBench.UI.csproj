@@ -47,8 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationState\FileSystemAppStateStore.cs" />
+    <Compile Include="ApplicationState\IAppStateStore.cs" />
     <Compile Include="Configuration\AppState.cs" />
     <Compile Include="Configuration\MRUList.cs" />
+    <Compile Include="Dialogs\IOpenFileDialog.cs" />
+    <Compile Include="Dialogs\QueryWorkbenchOpenFileDialog.cs" />
     <Compile Include="Models\Workspace.cs" />
     <Compile Include="Orchestration\IDirtyable.cs" />
     <Compile Include="Orchestration\IQueryWorkspace.cs" />
@@ -130,5 +134,6 @@
       <Name>QueryWorkbench.SqlServer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

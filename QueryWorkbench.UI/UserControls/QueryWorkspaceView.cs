@@ -14,11 +14,21 @@ namespace QueryWorkbenchUI.UserControls {
         private string _filename;
         private readonly TabbedResultsViewController _resultsViewController;
         private IQueryWorkspaceContainer _workspaceContainer;
+        private IDbCommandDispatcher _sqlCommandDispatcher;
+
+        public Workspace Model {
+            get {
+                return buildWorkspaceModel();
+            }
+        }
 
         #region ctors
+        public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher) {
+            _sqlCommandDispatcher = sqlCommandDispatcher;
+        }
+
         public QueryWorkspaceView() {
             InitializeComponent();
-
 
             IsDirty = true;
             _resultsViewController = new TabbedResultsViewController(resultsTab);
@@ -43,11 +53,11 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion ctors
 
         #region IQueryWorkspace
-        public void ApplyFilter() {
+        public virtual void ApplyFilter() {
             _resultsViewController.ApplyFilter();
         }
 
-        public bool Save(IWorkspaceController workspaceController) {
+        public virtual bool Save(IWorkspaceController workspaceController) {
             if (string.IsNullOrWhiteSpace(_filename)) {
                 var requestWriterArgs = new RequestNewFileArgs();
                 workspaceController.RequestNewFile(requestWriterArgs);
@@ -68,19 +78,22 @@ namespace QueryWorkbenchUI.UserControls {
             }
             IsDirty = false;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(false));
-            OnSaved?.Invoke(this, new OnSavedEventArgs(_filename));
+            //OnSaved?.Invoke(this, new OnSavedEventArgs(_filename));
+            RaiseOnSavedEvent(_filename);
             return true;
         }
 
-        public void RunQuery() {
-            // TODO: Use Factory to create BaseCommandDispatcher type.
-            BaseCommandDispatcher sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text, getQueryParams());
-            var data = sqlCommandDispatcher.RunQuery(getSQL());
+        public virtual void RunQuery() {
+            if (_sqlCommandDispatcher == null) {
+                // TODO: Use Factory to create BaseCommandDispatcher type.
+                _sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text, getQueryParams());
+            }
+            var data = _sqlCommandDispatcher.RunQuery(getSQL());
             _resultsViewController.BindResults(data);
             mainSplitContainer.Panel2Collapsed = false;
         }
 
-        public bool Close(IWorkspaceController workspaceController, bool force) {
+        public virtual bool Close(IWorkspaceController workspaceController, bool force) {
             if (force || !IsDirty) {
                 return true;
             }
@@ -118,6 +131,10 @@ namespace QueryWorkbenchUI.UserControls {
 
         public bool IsDirty { get; protected set; }
         #endregion
+
+        protected virtual void RaiseOnSavedEvent(string filename) {
+            OnSaved?.Invoke(this, new OnSavedEventArgs(filename));
+        }
 
         #region Fluent builder methods
         public static QueryWorkspaceView New() {
@@ -172,8 +189,8 @@ namespace QueryWorkbenchUI.UserControls {
 
         private void bindWorkspaceModel(Workspace workspaceModel) {
             txtConnString.Text = workspaceModel.ConnectionString;
-            txtQuery.Text = workspaceModel.Query.Replace("\n", Environment.NewLine);
-            txtParams.Text = workspaceModel.Parameters.Replace("\n", Environment.NewLine);
+            txtQuery.Text = workspaceModel.Query?.Replace("\n", Environment.NewLine);
+            txtParams.Text = workspaceModel.Parameters?.Replace("\n", Environment.NewLine);
             _resultsViewController.BindWorkspaceModel(workspaceModel);
         }
 

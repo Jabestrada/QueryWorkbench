@@ -1,81 +1,114 @@
 ﻿using QueryWorkbenchUI;
+using QueryWorkbenchUI.ApplicationState;
 using QueryWorkbenchUI.Configuration;
+using QueryWorkbenchUI.Dialogs;
 using QueryWorkbenchUI.Orchestration;
 using QueryWorkbenchUI.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace QueryWorkBench.UI {
     public partial class Main : Form, IWorkspaceController {
         private Dictionary<Keys, Action> _kbShortcuts = new Dictionary<Keys, Action>();
-        //private IQueryWorkspace _activeQueryWorkspace;
 
         private AppState _appState = new AppState();
+        private IOpenFileDialog _fileDialog = new QueryWorkbenchOpenFileDialog();
+        private IAppStateStore _appStateStore = new FileSystemAppStateStore();
+
+        public List<IQueryWorkspace> Workspaces { get; protected set; }
 
         public Main() {
             InitializeComponent();
             initializeKeyboardShortcuts();
             loadAppState();
-            //newTab();
             refreshUIState();
+
+            Workspaces = new List<IQueryWorkspace>();
         }
 
+        #region Fluent builders
 
+        public Main WithOpenFileDialog(IOpenFileDialog openfileDialog) {
+            _fileDialog = openfileDialog;
+            return this;
+        }
 
-        #region overrides
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+        public Main WithAppStateStore(IAppStateStore appStateStore) {
+            _appStateStore = appStateStore;
+            loadAppState();
+            return this;
+        }
+
+        #endregion
+
+        public ToolStripItemCollection MRUItems {
+            get {
+                return mrutoolStripMenuItem.DropDownItems;
+            }
+        }
+
+        public void AddWorkspace(string title, QueryWorkspaceView workspaceView) {
+            Workspaces.Add(workspaceView);
+            var newTab = new QWBTabPage(title);
+            var newWorkspace = workspaceView.WithDockStyle(DockStyle.Fill)
+                                            .WithContainer(newTab);
+            workspaceView.OnDirtyChanged += WorkspaceView_OnDirtyChanged;
+            workspaceView.OnSaved += WorkspaceView_OnSaved;
+            newTab.SetWorkspace(newWorkspace);
+            mainTabControl.TabPages.Add(newTab);
+            mainTabControl.SelectedTab = newTab;
+        }
+
+        public bool SendKeys(Keys keyData) {
             if (_kbShortcuts.ContainsKey(keyData)) {
-                //_activeQueryWorkspace = ActiveQueryWorkspace;
                 _kbShortcuts[keyData].Invoke();
                 refreshUIState();
                 return true;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return false;
+        }
+
+
+        #region overrides
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if (!SendKeys(keyData)) {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+            return true;
         }
         #endregion
 
         #region IWorkspaceController
         public void RequestNewFile(RequestNewFileArgs args) {
-            var newFileDialog = new OpenFileDialog {
-                CheckFileExists = false,
-                Filter = "Query Workspace Files | *.qws|All files (*.*)|*.*",
-                FileName = "New Workspace File.qws"
-            };
-
-            if (newFileDialog.ShowDialog() == DialogResult.Cancel) {
+            if (_fileDialog.ShowNewWorkspaceDialog() == DialogResult.Cancel) {
                 args.Cancel = true;
                 args.Filename = null;
                 return;
             }
 
             args.Cancel = false;
-            args.Filename = newFileDialog.FileName;
+            args.Filename = _fileDialog.FileName;
+
         }
         #endregion
 
         #region New, Open, Clone workspace
         private void newWorkspace() {
-            createNewTab($"Query Workspace {mainTabControl.TabPages.Count + 1} *", QueryWorkspaceView.New());
+            AddWorkspace($"Query Workspace {mainTabControl.TabPages.Count + 1} *", QueryWorkspaceView.New());
         }
 
         private void openWorkspace() {
-            var openFileDialog = new OpenFileDialog {
-                CheckFileExists = true,
-                Filter = "Query Workspace Files | *.qws|All files (*.*)|*.*"
-            };
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel) {
+            if (_fileDialog.ShowOpenWorkspaceDialog() == DialogResult.Cancel) {
                 return;
             }
-            openWorkspace(openFileDialog.FileName);
+            openWorkspace(_fileDialog.FileName);
         }
 
         private void openWorkspace(string filename) {
-            createNewTab(Path.GetFileName(filename), QueryWorkspaceView.New(filename));
+            AddWorkspace(Path.GetFileName(filename), QueryWorkspaceView.New(filename));
             pushMRUItem(filename);
         }
 
@@ -84,22 +117,8 @@ namespace QueryWorkBench.UI {
                 return;
             }
             var workspaceModel = ActiveQueryWorkspace.CloneModel();
-            createNewTab($"Copy of {mainTabControl.SelectedTab.Text}", QueryWorkspaceView.New(workspaceModel));
+            AddWorkspace($"Copy of {mainTabControl.SelectedTab.Text}", QueryWorkspaceView.New(workspaceModel));
         }
-        private void createNewTab(string title, QueryWorkspaceView workspaceView) {
-            var newTab = new QWBTabPage(title);
-            var newWorkspace = workspaceView.WithDockStyle(DockStyle.Fill)
-                                            .WithContainer(newTab);
-            workspaceView.OnDirtyChanged += WorkspaceView_OnDirtyChanged;
-            newTab.SetWorkspace(newWorkspace);
-            mainTabControl.TabPages.Add(newTab);
-            mainTabControl.SelectedTab = newTab;
-        }
-
-        private void WorkspaceView_OnDirtyChanged(object sender, DirtyChangedEventArgs e) {
-            refreshUIState();
-        }
-
         #endregion new, open, clone workspace
 
         #region Close, Save workspace
@@ -115,9 +134,12 @@ namespace QueryWorkBench.UI {
             if (mainTabControl.TabCount == 0) {
                 Close();
             }
+            Workspaces.Remove(ActiveQueryWorkspace);
+
             if (ActiveQueryWorkspace?.Close(this, force) == true) {
                 mainTabControl.TabPages.Remove(mainTabControl.SelectedTab);
             }
+
         }
 
         private void saveWorkspace() {
@@ -125,6 +147,16 @@ namespace QueryWorkBench.UI {
         }
 
         #endregion close workspace
+
+        #region WorkspaceView event handlers
+        private void WorkspaceView_OnSaved(object sender, OnSavedEventArgs e) {
+            pushMRUItem(e.Filename);
+        }
+
+        private void WorkspaceView_OnDirtyChanged(object sender, DirtyChangedEventArgs e) {
+            refreshUIState();
+        }
+        #endregion WorkspaceView event handlers
 
         #region Run Query, Apply Filter
         private void runQuery() {
@@ -167,15 +199,15 @@ namespace QueryWorkBench.UI {
 
         private void refreshUIState() {
             refreshMenuState();
-        
+
         }
 
-        private void refreshMenuState() { 
+        private void refreshMenuState() {
             var hasActiveWorkspace = ActiveQueryWorkspace != null;
             saveWorkspaceToolStripMenuItem.Enabled = ActiveQueryWorkspace?.IsDirty == true;
             cloneWorkspaceStripMenuItem.Enabled = hasActiveWorkspace;
             closeWorkspaceToolStripMenuItem.Enabled = hasActiveWorkspace;
-            mrutoolStripMenuItem.Enabled = _appState.MRUConfigList.Items.Count > 0;
+            mrutoolStripMenuItem.Enabled = _appState?.MRUConfigList?.Items?.Count > 0;
             closeWorkspaceWithoutSavingToolStripMenuItem.Enabled = hasActiveWorkspace;
         }
 
@@ -196,7 +228,7 @@ namespace QueryWorkBench.UI {
             ActiveQueryWorkspace?.ToggleResultsPane();
         }
 
-        private IQueryWorkspace ActiveQueryWorkspace {
+        public IQueryWorkspace ActiveQueryWorkspace {
             get {
                 if (mainTabControl.TabCount == 0 || mainTabControl.SelectedTab == null) {
                     return null;
@@ -284,6 +316,9 @@ namespace QueryWorkBench.UI {
         }
 
         private void pushMRUItem(string item) {
+            if (_appState == null) {
+                return;
+            }
             _appState.MRUConfigList.AddItem(item);
 
             mrutoolStripMenuItem.DropDownItems.Clear();
@@ -296,41 +331,16 @@ namespace QueryWorkBench.UI {
                 mrutoolStripMenuItem.Enabled = true;
             }
 
-            saveAppState();
-        }
-
-        private void saveAppState() {
-            var serializer = new DataContractSerializer(typeof(AppState));
-            string xmlString;
-            using (var sw = new StringWriter())
-            using (var writer = new XmlTextWriter(sw)) {
-                writer.Formatting = Formatting.Indented;
-                serializer.WriteObject(writer, _appState);
-                writer.Flush();
-                xmlString = sw.ToString();
-            }
-
-            string appStateFile = getAppStateFilename();
-            using (StreamWriter sw = new StreamWriter(appStateFile)) {
-                sw.Write(xmlString);
-                sw.Flush();
-                sw.Close();
-            }
+            _appStateStore.SaveAppState(getAppStateFilename(), _appState);
         }
 
         private void loadAppState() {
-            string appStateFile = getAppStateFilename();
-            if (!File.Exists(appStateFile)) {
+            _appState = _appStateStore.LoadAppState(getAppStateFilename());
+            if (_appState == null) {
                 mrutoolStripMenuItem.Enabled = false;
                 return;
             }
-            using (StreamReader sw = new StreamReader(appStateFile)) {
-                var reader = new XmlTextReader(sw);
-                var deserializer = new DataContractSerializer(typeof(AppState));
-                var result = deserializer.ReadObject(reader);
-                _appState = (AppState)result;
 
-            }
             foreach (var mruItem in _appState.MRUConfigList.Items) {
                 var mruMenuItem = createMruMenuItem(mruItem);
                 mrutoolStripMenuItem.DropDownItems.Add(mruMenuItem);
@@ -397,7 +407,6 @@ namespace QueryWorkBench.UI {
             mainTabControl.SelectedTab = mainTabControl.TabPages[mainTabControl.SelectedIndex == 0 ? mainTabControl.TabCount - 1 : mainTabControl.SelectedIndex - 1];
         }
         #endregion
-
 
     }
 }
