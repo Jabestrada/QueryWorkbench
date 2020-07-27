@@ -146,7 +146,7 @@ namespace QueryWorkBench.UI {
             ActiveQueryWorkspace?.Save(this);
         }
 
-        #endregion close workspace
+        #endregion Close, Save workspace
 
         #region WorkspaceView event handlers
         private void WorkspaceView_OnSaved(object sender, OnSavedEventArgs e) {

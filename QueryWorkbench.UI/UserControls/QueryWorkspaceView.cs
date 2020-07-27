@@ -86,9 +86,9 @@ namespace QueryWorkbenchUI.UserControls {
         public virtual void RunQuery() {
             if (_sqlCommandDispatcher == null) {
                 // TODO: Use Factory to create BaseCommandDispatcher type.
-                _sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text, getQueryParams());
+                _sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text);
             }
-            var data = _sqlCommandDispatcher.RunQuery(getSQL());
+            var data = _sqlCommandDispatcher.RunQuery(getSQL(), getQueryParams());
             _resultsViewController.BindResults(data);
             mainSplitContainer.Panel2Collapsed = false;
         }
