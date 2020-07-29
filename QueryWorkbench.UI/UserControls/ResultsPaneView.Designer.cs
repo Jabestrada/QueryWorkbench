@@ -53,7 +53,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.txtOutput);
             this.splitContainer1.Size = new System.Drawing.Size(610, 229);
-            this.splitContainer1.SplitterDistance = 137;
+            this.splitContainer1.SplitterDistance = 136;
             this.splitContainer1.TabIndex = 0;
             // 
             // panelFilter
@@ -98,9 +98,10 @@
             this.gridResults.ReadOnly = true;
             this.gridResults.RowHeadersVisible = false;
             this.gridResults.RowHeadersWidth = 102;
-            this.gridResults.Size = new System.Drawing.Size(610, 117);
+            this.gridResults.Size = new System.Drawing.Size(610, 116);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
+            this.gridResults.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.gridResults_ColumnHeaderMouseClick);
             // 
             // txtOutput
             // 
@@ -109,7 +110,7 @@
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtOutput.Size = new System.Drawing.Size(610, 88);
+            this.txtOutput.Size = new System.Drawing.Size(610, 89);
             this.txtOutput.TabIndex = 0;
             // 
             // ResultsPaneView

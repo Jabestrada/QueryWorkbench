@@ -9,9 +9,15 @@ namespace QueryWorkbenchUI.UserControls {
         private int _containerIndex, _oldCount, _newCount;
 
         public event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
+        private ContextMenu _resulsGridViewContextMenu;
+        private MenuItem _menuItemShowAll;
 
+        #region ctors
         public ResultsPaneView() {
             InitializeComponent();
+            _menuItemShowAll = new MenuItem("Show all");
+            _menuItemShowAll.Click += showAllColumns_Click;
+            _menuItemShowAll.Visible = false;
         }
         public ResultsPaneView(DataTable sourceDataTable) : this() {
             if (sourceDataTable == null) {
@@ -22,6 +28,7 @@ namespace QueryWorkbenchUI.UserControls {
 
             SetDataSource(sourceDataTable);
         }
+        #endregion
 
         public void SetDataSource(DataTable sourceDataTable) {
             _sourceDataTable = sourceDataTable;
@@ -38,13 +45,15 @@ namespace QueryWorkbenchUI.UserControls {
                 txtOutput.Clear();
                 txtOutput.ReadOnly = false;
             }
+            setResultsGridViewContextMenu();
         }
 
         public void ApplyFilter() {
-            applyFilter();
+            applyFilterInternal();
             OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
         }
 
+        #region Fluent-style setters
         public ResultsPaneView WithDockStyle(DockStyle dockStyle) {
             Dock = dockStyle;
             return this;
@@ -53,8 +62,59 @@ namespace QueryWorkbenchUI.UserControls {
             _containerIndex = containerIndex;
             return this;
         }
+        public ResultsPaneView WithResultsCountChangedHandler(EventHandler<ResultsCountChangedArgs> resultsCountChangedHandler) {
+            OnResultsCountChanged = resultsCountChangedHandler;
+            OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
+            return this;
+        }
+        #endregion Fluent-style setters
 
-        private void applyFilter() {
+        #region non-public
+
+        private void setResultsGridViewContextMenu() {
+            _resulsGridViewContextMenu = new ContextMenu();
+
+            for (int j = 0; j < _sourceDataTable.Columns.Count; j++) {
+                var menuItem = new MenuItem(_sourceDataTable.Columns[j].ColumnName);
+                menuItem.Checked = true;
+                menuItem.Click += toggleColumnVisibility;
+                _resulsGridViewContextMenu.MenuItems.Add(menuItem);
+            }
+
+            MenuItem separator = new MenuItem("-");
+            separator.Tag = false;
+
+            _resulsGridViewContextMenu.MenuItems.AddRange(new MenuItem[] { separator, _menuItemShowAll, });
+        }
+
+        private void showAllColumns_Click(object sender, EventArgs e) {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+
+            for (int j = 0; j < gridResults.Columns.Count; j++) {
+                gridResults.Columns[j].Visible = true;
+            }
+
+            foreach (MenuItem childMenuItem in _resulsGridViewContextMenu.MenuItems) {
+                if (childMenuItem != _menuItemShowAll) {
+                    childMenuItem.Checked = true;
+                }
+            }
+            _menuItemShowAll.Visible = false;
+        }
+
+        private void toggleColumnVisibility(object sender, EventArgs e) {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+
+            gridResults.Columns[menuItem.Text].Visible = !gridResults.Columns[menuItem.Text].Visible;
+            menuItem.Checked = gridResults.Columns[menuItem.Text].Visible;
+            if (!menuItem.Checked) {
+                _menuItemShowAll.Visible = true;
+            }
+        }
+
+        private void applyFilterInternal() {
             var dt = gridResults.DataSource as DataTable;
             _oldCount = dt.DefaultView.Count;
             try {
@@ -73,14 +133,17 @@ namespace QueryWorkbenchUI.UserControls {
             txtOutput.Text = dataRowView.Table.Rows[index][e.ColumnIndex].ToString();
         }
 
+        private void gridResults_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
+
+                _resulsGridViewContextMenu.Show(gridResults, gridResults.PointToClient(Cursor.Position));
+            }
+        }
+
         private void gridResults_CellEnter(object sender, DataGridViewCellEventArgs e) {
             writeCurrentCellValue(e);
         }
+        #endregion non-public
 
-        public ResultsPaneView WithResultsCountChangedHandler(EventHandler<ResultsCountChangedArgs> resultsCountChangedHandler) {
-            OnResultsCountChanged = resultsCountChangedHandler;
-            OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
-            return this;
-        }
     }
 }
