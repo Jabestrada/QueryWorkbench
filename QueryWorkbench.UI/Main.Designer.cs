@@ -37,6 +37,7 @@
             this.queryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.applyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,7 +57,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.queryToolStripMenuItem});
+            this.queryToolStripMenuItem,
+            this.shortcutsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -149,7 +151,7 @@
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
             this.runToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.runToolStripMenuItem.Text = "Run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
@@ -157,9 +159,16 @@
             // 
             this.applyFilterToolStripMenuItem.Name = "applyFilterToolStripMenuItem";
             this.applyFilterToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.applyFilterToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.applyFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.applyFilterToolStripMenuItem.Text = "Apply Filter";
             this.applyFilterToolStripMenuItem.Click += new System.EventHandler(this.applyFilterToolStripMenuItem_Click);
+            // 
+            // shortcutsToolStripMenuItem
+            // 
+            this.shortcutsToolStripMenuItem.Name = "shortcutsToolStripMenuItem";
+            this.shortcutsToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.shortcutsToolStripMenuItem.Text = "Shortcuts";
+            this.shortcutsToolStripMenuItem.Click += new System.EventHandler(this.shortcutsToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -195,6 +204,7 @@
         private System.Windows.Forms.ToolStripMenuItem mrutoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneWorkspaceStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem applyFilterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem shortcutsToolStripMenuItem;
     }
 }
 

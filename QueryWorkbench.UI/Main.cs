@@ -8,11 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace QueryWorkBench.UI {
     public partial class Main : Form, IWorkspaceController {
-        private Dictionary<Keys, Action> _kbShortcuts = new Dictionary<Keys, Action>();
+        private KeyboardShortcutsProvider _keybShortcutsProvider = new KeyboardShortcutsProvider();
+
+        private Dictionary<Keys, Action> _keybShortcutsMap = new Dictionary<Keys, Action>();
 
         private AppState _appState = new AppState();
         private IOpenFileDialog _fileDialog = new QueryWorkbenchOpenFileDialog();
@@ -63,8 +67,8 @@ namespace QueryWorkBench.UI {
         }
 
         public bool SendKeys(Keys keyData) {
-            if (_kbShortcuts.ContainsKey(keyData)) {
-                _kbShortcuts[keyData].Invoke();
+            if (_keybShortcutsMap.ContainsKey(keyData)) {
+                _keybShortcutsMap[keyData].Invoke();
                 refreshUIState();
                 return true;
             }
@@ -181,20 +185,22 @@ namespace QueryWorkBench.UI {
 
         #region Misc non-public
         private void initializeKeyboardShortcuts() {
-            _kbShortcuts.Add(Keys.Control | Keys.E, runQuery);
-            _kbShortcuts.Add(Keys.Control | Keys.F, applyFilter);
-            _kbShortcuts.Add(Keys.Control | Keys.N, newWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.S, saveWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.O, openWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.Q, forcedCloseWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.W, closeWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.D, cloneWorkspace);
-            _kbShortcuts.Add(Keys.Control | Keys.Shift | Keys.T, cycleWorkspaceTabsReverse);
-            _kbShortcuts.Add(Keys.Control | Keys.T, cycleWorkspaceTabs);
-            _kbShortcuts.Add(Keys.Control | Keys.R, toggleResultsPane);
-            _kbShortcuts.Add(Keys.Control | Keys.P, toggleParametersPane);
-            _kbShortcuts.Add(Keys.Control | Keys.Shift | Keys.O, toggleOutputPane);
-            _kbShortcuts.Add(Keys.Control | Keys.M, cycleResultsTabs);
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.E, Keys.None), runQuery, "Run Query");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.F, Keys.None), applyFilter, "Apply Filter");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.N, Keys.None), newWorkspace, "New Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.S, Keys.None), saveWorkspace, "Save Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.O, Keys.None), openWorkspace, "Open Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Q, Keys.None), forcedCloseWorkspace, "Forced Close Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.W, Keys.None), closeWorkspace, "Close Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.D, Keys.None), cloneWorkspace, "Clone Workspace");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.T, Keys.None), cycleWorkspaceTabs, "Cycle Forward Workspace Tabs");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsReverse, "Cycle Back Workspace Tabs");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.R, Keys.None), toggleResultsPane, "Toggle Results Pane");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.P, Keys.None), toggleParametersPane, "Toggle Parameters Pane");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabs, "Cycle Resuls Tab (TODO)");
+
+            _keybShortcutsMap = _keybShortcutsProvider.GetKeyboardActionsMap();
         }
 
         private void refreshUIState() {
@@ -408,5 +414,19 @@ namespace QueryWorkBench.UI {
         }
         #endregion
 
+        private void shortcutsToolStripMenuItem_Click(object sender, EventArgs e) {
+            var keysDescriptionMap = _keybShortcutsProvider.GetKeyboardDescriptionMap();
+            StringBuilder allDescriptionString = new StringBuilder();
+            foreach (var descriptionMap in keysDescriptionMap) {
+                allDescriptionString.Append(descriptionMap.Key);
+                allDescriptionString.Append("\t");
+                if (descriptionMap.Value.KeyCount == 2) {
+                    allDescriptionString.Append("\t");
+                }
+                allDescriptionString.Append(descriptionMap.Value.Description);
+                allDescriptionString.Append(Environment.NewLine);
+            }
+            MessageBox.Show(allDescriptionString.ToString(), "Keyboard Shortcuts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

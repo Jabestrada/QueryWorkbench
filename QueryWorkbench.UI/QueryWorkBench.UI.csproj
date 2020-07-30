@@ -53,6 +53,7 @@
     <Compile Include="Configuration\MRUList.cs" />
     <Compile Include="Dialogs\IOpenFileDialog.cs" />
     <Compile Include="Dialogs\QueryWorkbenchOpenFileDialog.cs" />
+    <Compile Include="KeyboardShortcutsProvider.cs" />
     <Compile Include="Models\Workspace.cs" />
     <Compile Include="Orchestration\IDirtyable.cs" />
     <Compile Include="Orchestration\IQueryWorkspace.cs" />
