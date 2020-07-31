@@ -66,7 +66,7 @@ namespace QueryWorkBench.UI {
             mainTabControl.SelectedTab = newTab;
         }
 
-        public bool SendKeys(Keys keyData) {
+        public bool AcceptKeys(Keys keyData) {
             if (_keybShortcutsMap.ContainsKey(keyData)) {
                 _keybShortcutsMap[keyData].Invoke();
                 refreshUIState();
@@ -78,7 +78,7 @@ namespace QueryWorkBench.UI {
 
         #region overrides
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-            if (!SendKeys(keyData)) {
+            if (!AcceptKeys(keyData)) {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
             return true;
@@ -229,11 +229,16 @@ namespace QueryWorkBench.UI {
 
 
         private void toggleParametersPane() {
-            ActiveQueryWorkspace?.ToggleParametersPane();
+            if (ActiveQueryWorkspace == null) return;
+
+            var current = ActiveQueryWorkspace.IsParametersPaneVisible;
+            ActiveQueryWorkspace.IsParametersPaneVisible = !current;
         }
 
         private void toggleResultsPane() {
-            ActiveQueryWorkspace?.ToggleResultsPane();
+            if (ActiveQueryWorkspace == null) return;
+            
+            ActiveQueryWorkspace.IsResultsPaneVisible = !ActiveQueryWorkspace.IsResultsPaneVisible;
         }
 
         public IQueryWorkspace ActiveQueryWorkspace {

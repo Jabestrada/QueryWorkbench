@@ -4,6 +4,7 @@ using QueryWorkbenchUI.Models;
 using QueryWorkbenchUI.Orchestration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -117,11 +118,22 @@ namespace QueryWorkbenchUI.UserControls {
             return buildWorkspaceModel();
         }
 
-        public void ToggleResultsPane() {
-            mainSplitContainer.Panel2Collapsed = !mainSplitContainer.Panel2Collapsed;
+        public bool IsResultsPaneVisible {
+            get {
+                return !mainSplitContainer.Panel2Collapsed;
+            }
+            set { 
+                mainSplitContainer.Panel2Collapsed = !value;
+            }
         }
-        public void ToggleParametersPane() {
-            queryAndParametersContainer.Panel2Collapsed = !queryAndParametersContainer.Panel2Collapsed;
+
+        public bool IsParametersPaneVisible {
+            get {
+                return !queryAndParametersContainer.Panel2Collapsed;
+            }
+            set {
+                queryAndParametersContainer.Panel2Collapsed = !value;
+            }
         }
 
         public bool IsOutputPaneVisible {

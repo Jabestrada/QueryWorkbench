@@ -12,8 +12,8 @@ namespace QueryWorkbenchUI {
         bool Save(IWorkspaceController workspaceController);
         bool Close(IWorkspaceController workspaceController, bool force);
         Workspace CloneModel();
-        void ToggleResultsPane();
-        void ToggleParametersPane();
+        bool IsResultsPaneVisible { get; set; }
+        bool IsParametersPaneVisible { get; set; }
         bool IsOutputPaneVisible { get; set; }
     }
 

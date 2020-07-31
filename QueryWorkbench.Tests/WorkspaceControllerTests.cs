@@ -30,7 +30,7 @@ namespace QueryWorkbench.Tests {
 
             Assert.AreEqual(1, sut.Workspaces.Count);
 
-            sut.SendKeys(Keys.Control | Keys.N);
+            sut.AcceptKeys(Keys.Control | Keys.N);
 
             Assert.IsFalse(sut.Workspaces.First().Model.HasSameValueAs(sut.Workspaces.Last().Model));
         }
@@ -50,7 +50,7 @@ namespace QueryWorkbench.Tests {
 
             Assert.AreEqual(1, sut.Workspaces.Count);
 
-            sut.SendKeys(Keys.Control | Keys.D);
+            sut.AcceptKeys(Keys.Control | Keys.D);
 
             Assert.IsTrue(sut.Workspaces.First().Model.HasSameValueAs(sut.Workspaces.Last().Model));
         }
@@ -65,7 +65,7 @@ namespace QueryWorkbench.Tests {
 
             sut.AddWorkspace("test2", workspace2);
 
-            sut.SendKeys(Keys.Control | Keys.F);
+            sut.AcceptKeys(Keys.Control | Keys.F);
 
             Assert.IsFalse(workspace1.DidApplyFilter);
             Assert.IsTrue(workspace2.DidApplyFilter);
@@ -76,13 +76,13 @@ namespace QueryWorkbench.Tests {
             var sut = new Main();
             var workspace1 = new MockQueryWorkspaceView(new MockCommandDispatcher());
             var workspace2 = new MockQueryWorkspaceView(new MockCommandDispatcher());
-            
+
 
             sut.AddWorkspace("test1", workspace1);
 
             sut.AddWorkspace("test2", workspace2);
 
-            sut.SendKeys(Keys.Control | Keys.E);
+            sut.AcceptKeys(Keys.Control | Keys.E);
 
             Assert.IsFalse(workspace1.DidRunQuery);
             Assert.IsTrue(workspace2.DidRunQuery);
@@ -97,7 +97,7 @@ namespace QueryWorkbench.Tests {
 
             sut.AddWorkspace("test", mockWorkspace);
 
-            sut.SendKeys(Keys.Control | Keys.Q);
+            sut.AcceptKeys(Keys.Control | Keys.Q);
 
             Assert.IsTrue(mockWorkspace.WasClosed);
         }
@@ -113,7 +113,7 @@ namespace QueryWorkbench.Tests {
 
             sut.AddWorkspace("test", mockWorkspace);
 
-            sut.SendKeys(Keys.Control | Keys.W);
+            sut.AcceptKeys(Keys.Control | Keys.W);
 
             Assert.IsTrue(mockWorkspace.WasClosed == expectedClosed);
         }
@@ -123,7 +123,7 @@ namespace QueryWorkbench.Tests {
             var mockOpenDialog = new MockOpenFileDialog();
             var sut = new Main().WithOpenFileDialog(mockOpenDialog);
 
-            sut.SendKeys(Keys.Control | Keys.O);
+            sut.AcceptKeys(Keys.Control | Keys.O);
 
             Assert.IsTrue(mockOpenDialog.OpenDialogShown);
         }
@@ -140,15 +140,15 @@ namespace QueryWorkbench.Tests {
             sut.AddWorkspace("test2", workspace2);
             sut.AddWorkspace("test3", workspace3);
 
-            sut.SendKeys(Keys.Control | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace1);
 
-            sut.SendKeys(Keys.Control | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace2);
 
-            sut.SendKeys(Keys.Control | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace3);
 
@@ -165,15 +165,15 @@ namespace QueryWorkbench.Tests {
             sut.AddWorkspace("test2", workspace2);
             sut.AddWorkspace("test3", workspace3);
 
-            sut.SendKeys(Keys.Control | Keys.Shift | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace2);
 
-            sut.SendKeys(Keys.Control | Keys.Shift | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace1);
 
-            sut.SendKeys(Keys.Control | Keys.Shift | Keys.T);
+            sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.T);
 
             Assert.AreEqual(sut.ActiveQueryWorkspace, workspace3);
         }
@@ -190,7 +190,7 @@ namespace QueryWorkbench.Tests {
             sut.AddWorkspace("test2", workspace2);
             sut.AddWorkspace("test3", workspace3);
 
-            sut.SendKeys(Keys.Control | Keys.S);
+            sut.AcceptKeys(Keys.Control | Keys.S);
 
             Assert.IsFalse(workspace1.DidSaveWorkspace);
             Assert.IsFalse(workspace2.DidSaveWorkspace);
@@ -207,7 +207,7 @@ namespace QueryWorkbench.Tests {
 
             sut.AddWorkspace("test1", workspace1);
 
-            sut.SendKeys(Keys.Control | Keys.S);
+            sut.AcceptKeys(Keys.Control | Keys.S);
 
             Assert.IsTrue(workspace1.DidSaveWorkspace);
 
@@ -221,21 +221,69 @@ namespace QueryWorkbench.Tests {
 
             sut.AddWorkspace("test", mockWorkspace);
 
-            sut.SendKeys(Keys.Control | Keys.E);
+            sut.AcceptKeys(Keys.Control | Keys.E);
 
             // Output pane visible by default after command execution
             Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
 
             // Toggle off
-            sut.SendKeys(Keys.Control | Keys.Shift | Keys.O);
+            sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.O);
 
             Assert.IsFalse(mockWorkspace.IsOutputPaneVisible);
 
             // Toggle back on
-            sut.SendKeys(Keys.Control | Keys.Shift | Keys.O);
-            
+            sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.O);
+
             Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+        }
+
+        [TestMethod]
+        public void itShouldToggleResultsPaneVisibility() {
+            var sut = new Main();
+            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher());
+
+            sut.AddWorkspace("test", mockWorkspace);
+
+            sut.AcceptKeys(Keys.Control | Keys.E);
+
+            // Output pane visible by default after command execution
+            Assert.IsTrue(mockWorkspace.IsResultsPaneVisible);
+
+            // Toggle off
+            sut.AcceptKeys(Keys.Control | Keys.R);
+
+            Assert.IsFalse(mockWorkspace.IsResultsPaneVisible);
+
+            // Toggle back on
+            sut.AcceptKeys(Keys.Control | Keys.R);
+
+            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+        }
+
+        [TestMethod]
+        public void itShouldToggleParametersPaneVisibility() {
+            var sut = new Main();
+            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher());
+
+            sut.AddWorkspace("test", mockWorkspace);
+
+            sut.AcceptKeys(Keys.Control | Keys.N);
+
+            // Output pane visible by default after opening new workspace
+            Assert.IsTrue(sut.ActiveQueryWorkspace.IsParametersPaneVisible);
+
+            // Toggle off
+            sut.AcceptKeys(Keys.Control | Keys.P);
+
+            // For some odd reason, mockWorkspace.IsParametersPaneVisible is TRUE here!!!
+            Assert.IsFalse(sut.ActiveQueryWorkspace.IsParametersPaneVisible);
+
+            // Toggle back on
+            sut.AcceptKeys(Keys.Control | Keys.P);
+
+            Assert.IsTrue(sut.ActiveQueryWorkspace.IsParametersPaneVisible);
 
         }
+
     }
 }
