@@ -14,6 +14,7 @@ namespace QueryWorkbenchUI {
         Workspace CloneModel();
         void ToggleResultsPane();
         void ToggleParametersPane();
+        bool IsOutputPaneVisible { get; set; }
     }
 
     public class OnSavedEventArgs : EventArgs {

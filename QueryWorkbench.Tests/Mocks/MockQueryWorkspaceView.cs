@@ -1,6 +1,6 @@
-﻿using QueryWorkbenchUI.Orchestration;
+﻿using QueryWorkbench.Infrastructure;
+using QueryWorkbenchUI.Orchestration;
 using QueryWorkbenchUI.UserControls;
-using System.IO;
 
 namespace QueryWorkbench.Tests.Mocks {
     public class MockQueryWorkspaceView : QueryWorkspaceView {
@@ -14,6 +14,10 @@ namespace QueryWorkbench.Tests.Mocks {
         public MockQueryWorkspaceView() {
 
         }
+        public MockQueryWorkspaceView(BaseDbCommandDispatcher command) : base(command) {
+
+        }
+
         public MockQueryWorkspaceView(string filename) : base() {
             Filename = filename;
         }
@@ -28,8 +32,10 @@ namespace QueryWorkbench.Tests.Mocks {
         public override void ApplyFilter() {
             DidApplyFilter = true;
         }
+
         public override void RunQuery() {
             DidRunQuery = true;
+            base.RunQuery();
         }
 
         public override bool Save(IWorkspaceController workspaceController) {

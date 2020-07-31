@@ -4,6 +4,8 @@ namespace QueryWorkbenchUI.Orchestration {
     public interface IResultsView {
         event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
         void ApplyFilter();
+        void ToggleOutputPane();
+        bool IsOutputPaneVisible { get; set; }
     }
 
     public class ResultsCountChangedArgs : EventArgs {

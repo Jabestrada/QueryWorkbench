@@ -12,6 +12,7 @@ namespace QueryWorkbenchUI.UserControls {
         private ContextMenu _resulsGridViewContextMenu;
         private MenuItem _menuItemShowAll;
 
+
         #region ctors
         public ResultsPaneView() {
             InitializeComponent();
@@ -29,6 +30,26 @@ namespace QueryWorkbenchUI.UserControls {
             SetDataSource(sourceDataTable);
         }
         #endregion
+
+        #region IResultsView
+        public bool IsOutputPaneVisible {
+            get {
+                return !splitContainer1.Panel2Collapsed;
+            }
+            set {
+                splitContainer1.Panel2Collapsed = !value; 
+            }
+        }
+
+        public void ApplyFilter() {
+            applyFilterInternal();
+            OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
+        }
+
+        public void ToggleOutputPane() {
+            splitContainer1.Panel2Collapsed = !splitContainer1.Panel2Collapsed;
+        }
+        #endregion IResultsView
 
         public void SetDataSource(DataTable sourceDataTable) {
             _sourceDataTable = sourceDataTable;
@@ -48,10 +69,6 @@ namespace QueryWorkbenchUI.UserControls {
             setResultsGridViewContextMenu();
         }
 
-        public void ApplyFilter() {
-            applyFilterInternal();
-            OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
-        }
 
         #region Fluent-style setters
         public ResultsPaneView WithDockStyle(DockStyle dockStyle) {

@@ -47,10 +47,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mocks\MockAppStateStore.cs" />
+    <Compile Include="Mocks\MockCommandDispatcher.cs" />
     <Compile Include="Mocks\MockOpenFileDialog.cs" />
     <Compile Include="Mocks\MockQueryWorkspaceView.cs">
       <SubType>UserControl</SubType>

@@ -197,7 +197,7 @@ namespace QueryWorkBench.UI {
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsReverse, "Cycle Back Workspace Tabs");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.R, Keys.None), toggleResultsPane, "Toggle Results Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.P, Keys.None), toggleParametersPane, "Toggle Parameters Pane");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabs, "Cycle Resuls Tab (TODO)");
 
             _keybShortcutsMap = _keybShortcutsProvider.GetKeyboardActionsMap();
@@ -222,7 +222,9 @@ namespace QueryWorkBench.UI {
         }
 
         private void toggleOutputPane() {
-            Debug.WriteLine("TODO: Toggle output pane");
+            if (ActiveQueryWorkspace == null) return;
+
+            ActiveQueryWorkspace.IsOutputPaneVisible = !ActiveQueryWorkspace.IsOutputPaneVisible;
         }
 
 
@@ -309,6 +311,21 @@ namespace QueryWorkBench.UI {
         private void closeWorkspaceWithoutSavingToolStripMenuItem1_Click(object sender, EventArgs e) {
             forcedCloseWorkspace();
         }
+
+        private void shortcutsToolStripMenuItem_Click(object sender, EventArgs e) {
+            var keysDescriptionMap = _keybShortcutsProvider.GetKeyboardDescriptionMap();
+            StringBuilder allDescriptionString = new StringBuilder();
+            foreach (var descriptionMap in keysDescriptionMap) {
+                allDescriptionString.Append(descriptionMap.Key);
+                allDescriptionString.Append("\t");
+                if (descriptionMap.Value.KeyCount == 2) {
+                    allDescriptionString.Append("\t");
+                }
+                allDescriptionString.Append(descriptionMap.Value.Description);
+                allDescriptionString.Append(Environment.NewLine);
+            }
+            MessageBox.Show(allDescriptionString.ToString(), "Keyboard Shortcuts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         #endregion Menu item events
 
         #endregion Control event handlers
@@ -367,10 +384,6 @@ namespace QueryWorkBench.UI {
                 openWorkspace(workspaceFile);
             }
         }
-
-
-
-
         #endregion MRU
 
         #region Tabs
@@ -414,19 +427,5 @@ namespace QueryWorkBench.UI {
         }
         #endregion
 
-        private void shortcutsToolStripMenuItem_Click(object sender, EventArgs e) {
-            var keysDescriptionMap = _keybShortcutsProvider.GetKeyboardDescriptionMap();
-            StringBuilder allDescriptionString = new StringBuilder();
-            foreach (var descriptionMap in keysDescriptionMap) {
-                allDescriptionString.Append(descriptionMap.Key);
-                allDescriptionString.Append("\t");
-                if (descriptionMap.Value.KeyCount == 2) {
-                    allDescriptionString.Append("\t");
-                }
-                allDescriptionString.Append(descriptionMap.Value.Description);
-                allDescriptionString.Append(Environment.NewLine);
-            }
-            MessageBox.Show(allDescriptionString.ToString(), "Keyboard Shortcuts", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
     }
 }

@@ -23,7 +23,7 @@ namespace QueryWorkbenchUI.UserControls {
         }
 
         #region ctors
-        public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher) {
+        public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher): this() {
             _sqlCommandDispatcher = sqlCommandDispatcher;
         }
 
@@ -123,6 +123,15 @@ namespace QueryWorkbenchUI.UserControls {
         public void ToggleParametersPane() {
             queryAndParametersContainer.Panel2Collapsed = !queryAndParametersContainer.Panel2Collapsed;
         }
+
+        public bool IsOutputPaneVisible {
+            get {
+                return _resultsViewController.IsOutputPaneVisible;
+            }
+            set {
+                _resultsViewController.IsOutputPaneVisible = value;
+            }
+        }
         #endregion IQueryWorkspace
 
         #region IDirtyable
@@ -217,6 +226,8 @@ namespace QueryWorkbenchUI.UserControls {
             IsDirty = isDirty;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(isDirty));
         }
+
+
         #endregion
 
 

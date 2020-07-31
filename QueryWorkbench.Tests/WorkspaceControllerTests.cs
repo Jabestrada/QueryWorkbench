@@ -3,6 +3,7 @@ using QueryWorkbench.Tests.Mocks;
 using QueryWorkBench.UI;
 using QueryWorkbenchUI.Models;
 using QueryWorkbenchUI.UserControls;
+using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -73,8 +74,9 @@ namespace QueryWorkbench.Tests {
         [TestMethod]
         public void itShouldRunQueryOnCtrlE() {
             var sut = new Main();
-            var workspace1 = new MockQueryWorkspaceView();
-            var workspace2 = new MockQueryWorkspaceView();
+            var workspace1 = new MockQueryWorkspaceView(new MockCommandDispatcher());
+            var workspace2 = new MockQueryWorkspaceView(new MockCommandDispatcher());
+            
 
             sut.AddWorkspace("test1", workspace1);
 
@@ -210,6 +212,30 @@ namespace QueryWorkbench.Tests {
             Assert.IsTrue(workspace1.DidSaveWorkspace);
 
             Assert.IsTrue(sut.MRUItems[0].Text.Contains(workspaceFile));
+        }
+
+        [TestMethod]
+        public void itShouldToggleOutputPaneVisibility() {
+            var sut = new Main();
+            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher());
+
+            sut.AddWorkspace("test", mockWorkspace);
+
+            sut.SendKeys(Keys.Control | Keys.E);
+
+            // Output pane visible by default after command execution
+            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+
+            // Toggle off
+            sut.SendKeys(Keys.Control | Keys.Shift | Keys.O);
+
+            Assert.IsFalse(mockWorkspace.IsOutputPaneVisible);
+
+            // Toggle back on
+            sut.SendKeys(Keys.Control | Keys.Shift | Keys.O);
+            
+            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+
         }
     }
 }

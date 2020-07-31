@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace QueryWorkbenchUI.Orchestration {
@@ -32,17 +31,24 @@ namespace QueryWorkbenchUI.Orchestration {
                 yield return getTabTitle(tabPage);
             }
         }
-        
+
 
         public void ApplyFilter() {
-            if (_tabContainer.SelectedTab == null) {
-                return;
+            ActiveResultsView?.ApplyFilter();
+        }
+
+        public void ToggleOutputPane() {
+            ActiveResultsView?.ToggleOutputPane();
+        }
+
+        public bool IsOutputPaneVisible {
+            get { 
+               return ActiveResultsView?.IsOutputPaneVisible == true;
             }
-
-            IResultsView selectedResultsView = getChildControl<IResultsView>(_tabContainer.SelectedTab);
-
-            if (selectedResultsView != null) {
-                selectedResultsView.ApplyFilter();
+            set {
+                if (ActiveResultsView != null) { 
+                   ActiveResultsView.IsOutputPaneVisible = value;
+                }
             }
         }
 
@@ -66,6 +72,16 @@ namespace QueryWorkbenchUI.Orchestration {
         }
 
         #region non-public
+        private IResultsView ActiveResultsView {
+            get {
+                if (_tabContainer.SelectedTab == null) {
+                    return null;
+                }
+                return getChildControl<IResultsView>(_tabContainer.SelectedTab);
+            }
+
+        }
+
         private void bindContextMenu() {
             _tabContainer.MouseUp += _tabContainer_MouseUp;
 
@@ -158,7 +174,7 @@ namespace QueryWorkbenchUI.Orchestration {
             return pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
         }
 
-        
+
         #endregion non-public
     }
 }
