@@ -25,11 +25,11 @@
         private void InitializeComponent() {
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.queryAndParametersContainer = new System.Windows.Forms.SplitContainer();
-            this.txtQuery = new System.Windows.Forms.TextBox();
-            this.txtParams = new System.Windows.Forms.TextBox();
             this.mainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.resultsTab = new System.Windows.Forms.TabControl();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtQuery = new System.Windows.Forms.RichTextBox();
+            this.txtParams = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.queryAndParametersContainer)).BeginInit();
             this.queryAndParametersContainer.Panel1.SuspendLayout();
             this.queryAndParametersContainer.Panel2.SuspendLayout();
@@ -67,29 +67,6 @@
             this.queryAndParametersContainer.Size = new System.Drawing.Size(626, 144);
             this.queryAndParametersContainer.SplitterDistance = 520;
             this.queryAndParametersContainer.TabIndex = 4;
-            // 
-            // txtQuery
-            // 
-            this.txtQuery.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtQuery.Location = new System.Drawing.Point(0, 0);
-            this.txtQuery.Multiline = true;
-            this.txtQuery.Name = "txtQuery";
-            this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtQuery.Size = new System.Drawing.Size(520, 144);
-            this.txtQuery.TabIndex = 0;
-            this.txtQuery.Text = "SELECT * FROM Person\r\nSELECT * FROM Company";
-            this.txtQuery.TextChanged += new System.EventHandler(this.txtQuery_TextChanged);
-            // 
-            // txtParams
-            // 
-            this.txtParams.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtParams.Location = new System.Drawing.Point(0, 0);
-            this.txtParams.Multiline = true;
-            this.txtParams.Name = "txtParams";
-            this.txtParams.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtParams.Size = new System.Drawing.Size(102, 144);
-            this.txtParams.TabIndex = 0;
-            this.txtParams.TextChanged += new System.EventHandler(this.txtParams_TextChanged);
             // 
             // mainSplitContainer
             // 
@@ -129,6 +106,26 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Conn string";
             // 
+            // txtQuery
+            // 
+            this.txtQuery.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtQuery.Location = new System.Drawing.Point(0, 0);
+            this.txtQuery.Name = "txtQuery";
+            this.txtQuery.Size = new System.Drawing.Size(520, 144);
+            this.txtQuery.TabIndex = 0;
+            this.txtQuery.Text = "SELECT * FROM Person\nSELECT * FROM Company";
+            this.txtQuery.TextChanged += new System.EventHandler(this.txtQuery_TextChanged);
+            // 
+            // txtParams
+            // 
+            this.txtParams.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtParams.Location = new System.Drawing.Point(0, 0);
+            this.txtParams.Name = "txtParams";
+            this.txtParams.Size = new System.Drawing.Size(102, 144);
+            this.txtParams.TabIndex = 0;
+            this.txtParams.Text = "";
+            this.txtParams.TextChanged += new System.EventHandler(this.txtParams_TextChanged);
+            // 
             // QueryWorkspaceView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,9 +136,7 @@
             this.Name = "QueryWorkspaceView";
             this.Size = new System.Drawing.Size(629, 335);
             this.queryAndParametersContainer.Panel1.ResumeLayout(false);
-            this.queryAndParametersContainer.Panel1.PerformLayout();
             this.queryAndParametersContainer.Panel2.ResumeLayout(false);
-            this.queryAndParametersContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryAndParametersContainer)).EndInit();
             this.queryAndParametersContainer.ResumeLayout(false);
             this.mainSplitContainer.Panel1.ResumeLayout(false);
@@ -158,9 +153,9 @@
         private System.Windows.Forms.TextBox txtConnString;
         private System.Windows.Forms.SplitContainer queryAndParametersContainer;
         private System.Windows.Forms.SplitContainer mainSplitContainer;
-        private System.Windows.Forms.TextBox txtQuery;
-        private System.Windows.Forms.TextBox txtParams;
         private System.Windows.Forms.TabControl resultsTab;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RichTextBox txtQuery;
+        private System.Windows.Forms.RichTextBox txtParams;
     }
 }

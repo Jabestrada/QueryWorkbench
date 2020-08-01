@@ -5,6 +5,7 @@ using QueryWorkbenchUI.Orchestration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -171,8 +172,16 @@ namespace QueryWorkbenchUI.UserControls {
         public void CommentLine() {
             var caretPosAfterUpdate = txtQuery.SelectionStart + SqlCommandDispatcher.LineCommentToken.Length;
             var firstCharIndexOfCurrentLine = txtQuery.GetFirstCharIndexOfCurrentLine();
+            var currentLine = txtQuery.GetLineFromCharIndex(firstCharIndexOfCurrentLine);
             txtQuery.Text = txtQuery.Text.Insert(firstCharIndexOfCurrentLine, SqlCommandDispatcher.LineCommentToken);
+
+            // TODO: Decide if syntax highlighting will be supported; below is for comment
+            //var currentLineText = txtQuery.Lines[currentLine];
+            //txtQuery.Select(firstCharIndexOfCurrentLine, currentLineText.Length);
+            //txtQuery.SelectionColor = Color.Green;
+
             txtQuery.SelectionStart = caretPosAfterUpdate;
+            txtQuery.SelectionLength = 0;
         }
 
         public void UncommentLine() {
