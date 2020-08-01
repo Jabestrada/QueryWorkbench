@@ -18,6 +18,11 @@ namespace QueryWorkbenchUI.Configuration {
             _maxItems = maxItems;
         }
 
+        /// <summary>
+        /// An MRU list is like a queue (i.e. FIFO) except that the list should be unique
+        /// after pushing a new item.
+        /// </summary>
+        /// <param name="item"></param>
         public void AddItem(T item) {
             if (_items.Count == 0) {
                 _items.Add(0, item);

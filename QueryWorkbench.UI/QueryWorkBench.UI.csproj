@@ -71,6 +71,9 @@
     <Compile Include="Orchestration\TabbedResultsViewController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\ContextMenus\ResultsGridColumnHeaderContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserControls\QueryWorkspaceView.cs">
       <SubType>UserControl</SubType>
     </Compile>

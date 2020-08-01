@@ -194,13 +194,13 @@ namespace QueryWorkBench.UI {
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Q, Keys.None), forcedCloseWorkspace, "Forced Close Workspace");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.W, Keys.None), closeWorkspace, "Close Workspace");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.D, Keys.None), cloneWorkspace, "Clone Workspace");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.T, Keys.None), cycleWorkspaceTabsForward, "Cycle Forward Workspace Tabs");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsBackward, "Cycle Back Workspace Tabs");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.T, Keys.None), cycleWorkspaceTabsForward, "Select Next Workspace Tab");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsBackward, "Select Previous Workspace Tab");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.R, Keys.None), toggleResultsPane, "Toggle Results Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.P, Keys.None), toggleParametersPane, "Toggle Parameters Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabsForward, "Cycle Resuls Tab Forward (TODO)");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.M), cycleResultsTabsBackward, "Cycle Resuls Tab Backward (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabsForward, "Select Next Resuls Tab");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.M), cycleResultsTabsBackward, "Select Previous Resuls Tab");
 
 
             _keybShortcutsMap = _keybShortcutsProvider.GetKeyboardActionsMap();
@@ -326,17 +326,17 @@ namespace QueryWorkBench.UI {
 
         private void shortcutsToolStripMenuItem_Click(object sender, EventArgs e) {
             var keysDescriptionMap = _keybShortcutsProvider.GetKeyboardDescriptionMap();
-            StringBuilder allDescriptionString = new StringBuilder();
+            StringBuilder allDescriptionsString = new StringBuilder();
             foreach (var descriptionMap in keysDescriptionMap) {
-                allDescriptionString.Append(descriptionMap.Key);
-                allDescriptionString.Append("\t");
+                allDescriptionsString.Append(descriptionMap.Key);
+                allDescriptionsString.Append("\t");
                 if (descriptionMap.Value.KeyCount == 2) {
-                    allDescriptionString.Append("\t");
+                    allDescriptionsString.Append("\t");
                 }
-                allDescriptionString.Append(descriptionMap.Value.Description);
-                allDescriptionString.Append(Environment.NewLine);
+                allDescriptionsString.Append(descriptionMap.Value.Description);
+                allDescriptionsString.Append(Environment.NewLine);
             }
-            MessageBox.Show(allDescriptionString.ToString(), "Keyboard Shortcuts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(allDescriptionsString.ToString(), "Keyboard Shortcuts", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion Menu item events
 
