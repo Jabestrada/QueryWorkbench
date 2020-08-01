@@ -2,11 +2,11 @@
 using QueryWorkbenchUI.UserControls.ContextMenus;
 using System;
 using System.Data;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace QueryWorkbenchUI.UserControls {
-    public partial class ResultsPaneView : UserControl, IResultsView {
+    public partial class ResultsPaneView : UserControl, IResultsPaneView  {
+
         private DataTable _sourceDataTable;
         private int _containerIndex, _oldCount, _newCount;
 
@@ -18,10 +18,12 @@ namespace QueryWorkbenchUI.UserControls {
         public ResultsPaneView() {
             InitializeComponent();
         }
-        public ResultsPaneView(DataTable sourceDataTable) : this() {
+        public ResultsPaneView(string tabText, DataTable sourceDataTable) : this() {
             if (sourceDataTable == null) {
                 return;
             }
+
+            Text = tabText;
             _oldCount = _sourceDataTable == null ? 0 : _sourceDataTable.DefaultView.Count;
             _newCount = sourceDataTable.DefaultView.Count;
 
@@ -30,6 +32,8 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion
 
         #region IResultsView
+        public override string Text { get; set; }
+        
         public bool IsOutputPaneVisible {
             get {
                 return !splitContainer1.Panel2Collapsed;
@@ -61,7 +65,7 @@ namespace QueryWorkbenchUI.UserControls {
                 txtOutput.ReadOnly = false;
             }
 
-            _resultsGridContextMenu = new ResultsGridContextMenu(gridResults);
+            _resultsGridContextMenu = new ResultsGridContextMenu(this, gridResults);
         }
 
 

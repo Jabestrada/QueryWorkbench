@@ -5,7 +5,6 @@ using QueryWorkbenchUI.UserForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -38,6 +37,7 @@ namespace QueryWorkbenchUI.Orchestration {
 
         #region IResultsView
         public event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
+
         public void ApplyFilter() {
             ActiveResultsView?.ApplyFilter();
         }
@@ -95,6 +95,7 @@ namespace QueryWorkbenchUI.Orchestration {
 
         }
 
+
         private void bindContextMenu() {
             _tabContainer.MouseUp += _tabContainer_MouseUp;
 
@@ -130,7 +131,7 @@ namespace QueryWorkbenchUI.Orchestration {
             var newResultTab = new TabPage(tabTitle);
             _tabContainer.TabPages.Add(newResultTab);
 
-            var resultsPane = new ResultsPaneView(sourceDataTable)
+            var resultsPane = new ResultsPaneView(tabTitle, sourceDataTable)
                                   .WithDockStyle(DockStyle.Fill)
                                   .WithContainerIndex(tabPageIndex)
                                   .WithResultsCountChangedHandler(ResultsPane_OnResultsCountChanged);

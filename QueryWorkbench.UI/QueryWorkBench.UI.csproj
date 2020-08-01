@@ -53,6 +53,7 @@
     <Compile Include="Configuration\MRUList.cs" />
     <Compile Include="Dialogs\IOpenFileDialog.cs" />
     <Compile Include="Dialogs\QueryWorkbenchOpenFileDialog.cs" />
+    <Compile Include="Extensions\DataGridViewExtensions.cs" />
     <Compile Include="Extensions\TabControlExtensions.cs" />
     <Compile Include="KeyboardShortcutsProvider.cs" />
     <Compile Include="Models\Workspace.cs" />
@@ -65,13 +66,14 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Orchestration\IQueryWorkspaceContainer.cs" />
+    <Compile Include="Orchestration\IResultsPaneView.cs" />
     <Compile Include="Orchestration\IResultsView.cs" />
     <Compile Include="Orchestration\ITabbedResultsView.cs" />
     <Compile Include="Orchestration\IWorkspaceController.cs" />
     <Compile Include="Orchestration\TabbedResultsViewController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserControls\ContextMenus\MenuItemMetaData.cs" />
+    <Compile Include="UserControls\ContextMenus\MenuItemMetadata.cs" />
     <Compile Include="UserControls\ContextMenus\ResultsGridContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>

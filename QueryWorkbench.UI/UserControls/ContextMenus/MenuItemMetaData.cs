@@ -1,6 +1,9 @@
 ﻿namespace QueryWorkbenchUI.UserControls.ContextMenus {
-    public class MenuItemMetaData {
+    public class MenuItemMetadata {
         public MenuItemActionType ActionType { get; set; }
+        public MenuItemMetadata(MenuItemActionType actionType) {
+            ActionType = actionType;
+        }
     }
 
     public enum MenuItemActionType { 
