@@ -96,8 +96,7 @@
             this.gridResults.Location = new System.Drawing.Point(0, 20);
             this.gridResults.Name = "gridResults";
             this.gridResults.ReadOnly = true;
-            this.gridResults.RowHeadersVisible = false;
-            this.gridResults.RowHeadersWidth = 102;
+            this.gridResults.RowHeadersWidth = 25;
             this.gridResults.Size = new System.Drawing.Size(610, 116);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
