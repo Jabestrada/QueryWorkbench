@@ -201,14 +201,22 @@ namespace QueryWorkBench.UI {
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabsForward, "Select Next Resuls Tab");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.M), cycleResultsTabsBackward, "Select Previous Resuls Tab");
-
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.K), commentLine, "Comment Line (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.U), uncommentLine, "Uncomment Line (TODO)");
 
             _keybShortcutsMap = _keybShortcutsProvider.GetKeyboardActionsMap();
         }
 
+        private void uncommentLine() {
+            ActiveQueryWorkspace?.UncommentLine();
+        }
+
+        private void commentLine() {
+            ActiveQueryWorkspace?.CommentLine();
+        }
+
         private void refreshUIState() {
             refreshMenuState();
-
         }
 
         private void refreshMenuState() {
@@ -230,7 +238,7 @@ namespace QueryWorkBench.UI {
 
         private void toggleOutputPane() {
             if (ActiveQueryWorkspace == null) return;
-            
+
             ActiveQueryWorkspace.IsOutputPaneVisible = !ActiveQueryWorkspace.IsOutputPaneVisible;
         }
 

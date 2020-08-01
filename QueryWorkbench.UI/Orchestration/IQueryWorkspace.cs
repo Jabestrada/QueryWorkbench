@@ -13,6 +13,10 @@ namespace QueryWorkbenchUI {
         Workspace CloneModel();
         bool IsResultsPaneVisible { get; set; }
         bool IsParametersPaneVisible { get; set; }
+
+        void CommentLine();
+        void UncommentLine();
+
     }
 
     public class OnSavedEventArgs : EventArgs {

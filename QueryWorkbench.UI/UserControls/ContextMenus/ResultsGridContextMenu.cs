@@ -106,14 +106,8 @@ namespace QueryWorkbenchUI.UserControls.ContextMenus {
 
                     var sameValues = GridView.SelectedRows[0].Cells[colIndex].Value.ToString() ==
                                      GridView.SelectedRows[1].Cells[colIndex].Value.ToString();
-                    if (sameValues) {
-                        GridView.SelectedRows[0].Cells[colIndex].Style = noDiffCellStyle;
-                        GridView.SelectedRows[1].Cells[colIndex].Style = noDiffCellStyle;
-                    }
-                    else {
-                        GridView.SelectedRows[0].Cells[colIndex].Style = withDiffCellStyle;
-                        GridView.SelectedRows[1].Cells[colIndex].Style = withDiffCellStyle;
-                    }
+                    GridView.SelectedRows[0].Cells[colIndex].Style = sameValues ? noDiffCellStyle : withDiffCellStyle;
+                    GridView.SelectedRows[1].Cells[colIndex].Style = sameValues ? noDiffCellStyle : withDiffCellStyle;
                 }
             }
 

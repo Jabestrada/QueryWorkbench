@@ -23,9 +23,22 @@ namespace QueryWorkbenchUI.UserControls {
             }
         }
 
+        public IDbCommandDispatcher SqlCommandDispatcher {
+            get {
+                if (_sqlCommandDispatcher == null) {
+                    // TODO: Use Factory to create BaseCommandDispatcher type.
+                    _sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text);
+                }
+                return _sqlCommandDispatcher;
+            }
+
+            protected set {
+                _sqlCommandDispatcher = value;
+            }
+        }
         #region ctors
         public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher) : this() {
-            _sqlCommandDispatcher = sqlCommandDispatcher;
+            SqlCommandDispatcher = sqlCommandDispatcher;
         }
 
         public QueryWorkspaceView() {
@@ -108,11 +121,7 @@ namespace QueryWorkbenchUI.UserControls {
         }
 
         public virtual void RunQuery() {
-            if (_sqlCommandDispatcher == null) {
-                // TODO: Use Factory to create BaseCommandDispatcher type.
-                _sqlCommandDispatcher = new SqlServerCommandDispatcher(txtConnString.Text);
-            }
-            var data = _sqlCommandDispatcher.RunQuery(getSQL(), getQueryParams());
+            var data = SqlCommandDispatcher.RunQuery(getSQL(), getQueryParams());
             _resultsViewController.BindResults(data);
             mainSplitContainer.Panel2Collapsed = false;
         }
@@ -157,6 +166,30 @@ namespace QueryWorkbenchUI.UserControls {
             set {
                 queryAndParametersContainer.Panel2Collapsed = !value;
             }
+        }
+
+        public void CommentLine() {
+            var caretPosAfterUpdate = txtQuery.SelectionStart + SqlCommandDispatcher.LineCommentToken.Length;
+            var firstCharIndexOfCurrentLine = txtQuery.GetFirstCharIndexOfCurrentLine();
+            txtQuery.Text = txtQuery.Text.Insert(firstCharIndexOfCurrentLine, SqlCommandDispatcher.LineCommentToken);
+            txtQuery.SelectionStart = caretPosAfterUpdate;
+        }
+
+        public void UncommentLine() {
+            var lineCommentTokenLength = SqlCommandDispatcher.LineCommentToken.Length;
+            var caretPosAfterUpdate = txtQuery.SelectionStart - lineCommentTokenLength;
+            var firstCharIndexOfCurrentLine = txtQuery.GetFirstCharIndexOfCurrentLine();
+            
+            if ((firstCharIndexOfCurrentLine + lineCommentTokenLength - 1) >= txtQuery.Text.Length) return;
+
+            var queryText = txtQuery.Text;
+            string substringFromCurrentIndex = queryText[firstCharIndexOfCurrentLine].ToString() + 
+                                               queryText[firstCharIndexOfCurrentLine + (lineCommentTokenLength - 1)].ToString();
+            if (substringFromCurrentIndex != SqlCommandDispatcher.LineCommentToken) return;
+
+            txtQuery.Text = queryText.Substring(0, firstCharIndexOfCurrentLine) +
+                            queryText.Substring(firstCharIndexOfCurrentLine + lineCommentTokenLength);
+            txtQuery.SelectionStart = caretPosAfterUpdate;
         }
         #endregion IQueryWorkspace
 
@@ -252,6 +285,8 @@ namespace QueryWorkbenchUI.UserControls {
             IsDirty = isDirty;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(isDirty));
         }
+
+
         #endregion
 
 

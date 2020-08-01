@@ -9,6 +9,12 @@ namespace QueryWorkbench.Infrastructure {
             ConnectionString = connectionString;
         }
 
+        public virtual string LineCommentToken {
+            get {
+                return "--";
+            }
+        }
+
         public abstract DataSet RunQuery(string query, Dictionary<string, object> parameters);
     }
 }
