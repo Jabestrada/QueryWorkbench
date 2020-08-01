@@ -53,6 +53,7 @@
     <Compile Include="Configuration\MRUList.cs" />
     <Compile Include="Dialogs\IOpenFileDialog.cs" />
     <Compile Include="Dialogs\QueryWorkbenchOpenFileDialog.cs" />
+    <Compile Include="Extensions\TabControlExtensions.cs" />
     <Compile Include="KeyboardShortcutsProvider.cs" />
     <Compile Include="Models\Workspace.cs" />
     <Compile Include="Orchestration\IDirtyable.cs" />
@@ -65,6 +66,7 @@
     </Compile>
     <Compile Include="Orchestration\IQueryWorkspaceContainer.cs" />
     <Compile Include="Orchestration\IResultsView.cs" />
+    <Compile Include="Orchestration\ITabbedResultsView.cs" />
     <Compile Include="Orchestration\IWorkspaceController.cs" />
     <Compile Include="Orchestration\TabbedResultsViewController.cs" />
     <Compile Include="Program.cs" />

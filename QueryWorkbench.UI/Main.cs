@@ -2,6 +2,7 @@
 using QueryWorkbenchUI.ApplicationState;
 using QueryWorkbenchUI.Configuration;
 using QueryWorkbenchUI.Dialogs;
+using QueryWorkbenchUI.Extensions;
 using QueryWorkbenchUI.Orchestration;
 using QueryWorkbenchUI.UserControls;
 using System;
@@ -193,12 +194,14 @@ namespace QueryWorkBench.UI {
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Q, Keys.None), forcedCloseWorkspace, "Forced Close Workspace");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.W, Keys.None), closeWorkspace, "Close Workspace");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.D, Keys.None), cloneWorkspace, "Clone Workspace");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.T, Keys.None), cycleWorkspaceTabs, "Cycle Forward Workspace Tabs");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsReverse, "Cycle Back Workspace Tabs");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.T, Keys.None), cycleWorkspaceTabsForward, "Cycle Forward Workspace Tabs");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.T), cycleWorkspaceTabsBackward, "Cycle Back Workspace Tabs");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.R, Keys.None), toggleResultsPane, "Toggle Results Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.P, Keys.None), toggleParametersPane, "Toggle Parameters Pane");
             _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.O), toggleOutputPane, "Toggle Output Pane");
-            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabs, "Cycle Resuls Tab (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.M, Keys.None), cycleResultsTabsForward, "Cycle Resuls Tab Forward (TODO)");
+            _keybShortcutsProvider.Add(Tuple.Create(Keys.Control, Keys.Shift, Keys.M), cycleResultsTabsBackward, "Cycle Resuls Tab Backward (TODO)");
+
 
             _keybShortcutsMap = _keybShortcutsProvider.GetKeyboardActionsMap();
         }
@@ -217,13 +220,17 @@ namespace QueryWorkBench.UI {
             closeWorkspaceWithoutSavingToolStripMenuItem.Enabled = hasActiveWorkspace;
         }
 
-        private void cycleResultsTabs() {
-            Debug.WriteLine("TODO: Cycle results tabs");
+        private void cycleResultsTabsForward() {
+            ActiveQueryWorkspace?.CycleResultsTabForward();
+        }
+
+        private void cycleResultsTabsBackward() {
+            ActiveQueryWorkspace?.CycleResultsTabBackward();
         }
 
         private void toggleOutputPane() {
             if (ActiveQueryWorkspace == null) return;
-
+            
             ActiveQueryWorkspace.IsOutputPaneVisible = !ActiveQueryWorkspace.IsOutputPaneVisible;
         }
 
@@ -237,7 +244,7 @@ namespace QueryWorkBench.UI {
 
         private void toggleResultsPane() {
             if (ActiveQueryWorkspace == null) return;
-            
+
             ActiveQueryWorkspace.IsResultsPaneVisible = !ActiveQueryWorkspace.IsResultsPaneVisible;
         }
 
@@ -416,19 +423,12 @@ namespace QueryWorkBench.UI {
             return null;
         }
 
-        private void cycleWorkspaceTabs() {
-            if (mainTabControl.TabPages == null || mainTabControl.TabPages.Count <= 1) {
-                return;
-            }
-            mainTabControl.SelectedTab = mainTabControl.TabPages[(mainTabControl.SelectedIndex + 1) % mainTabControl.TabCount];
+        private void cycleWorkspaceTabsForward() {
+            mainTabControl.SelectNextTab();
         }
 
-        private void cycleWorkspaceTabsReverse() {
-            if (mainTabControl.TabPages == null || mainTabControl.TabPages.Count <= 1) {
-                return;
-            }
-
-            mainTabControl.SelectedTab = mainTabControl.TabPages[mainTabControl.SelectedIndex == 0 ? mainTabControl.TabCount - 1 : mainTabControl.SelectedIndex - 1];
+        private void cycleWorkspaceTabsBackward() {
+            mainTabControl.SelectPreviousTab();
         }
         #endregion
 

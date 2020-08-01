@@ -24,7 +24,7 @@ namespace QueryWorkbenchUI.UserControls {
         }
 
         #region ctors
-        public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher): this() {
+        public QueryWorkspaceView(IDbCommandDispatcher sqlCommandDispatcher) : this() {
             _sqlCommandDispatcher = sqlCommandDispatcher;
         }
 
@@ -54,9 +54,32 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion ctors
 
         #region IQueryWorkspace
+
+        #region inherited from IResultsView
+        public event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
+
         public virtual void ApplyFilter() {
             _resultsViewController.ApplyFilter();
         }
+
+        public bool IsOutputPaneVisible {
+            get {
+                return _resultsViewController.IsOutputPaneVisible;
+            }
+            set {
+                _resultsViewController.IsOutputPaneVisible = value;
+            }
+        }
+
+        public void CycleResultsTabForward() {
+            _resultsViewController.CycleResultsTabForward();
+        }
+
+        public void CycleResultsTabBackward() {
+            _resultsViewController.CycleResultsTabBackward();
+        }
+
+        #endregion inherited from IResultsView
 
         public virtual bool Save(IWorkspaceController workspaceController) {
             if (string.IsNullOrWhiteSpace(_filename)) {
@@ -122,7 +145,7 @@ namespace QueryWorkbenchUI.UserControls {
             get {
                 return !mainSplitContainer.Panel2Collapsed;
             }
-            set { 
+            set {
                 mainSplitContainer.Panel2Collapsed = !value;
             }
         }
@@ -133,15 +156,6 @@ namespace QueryWorkbenchUI.UserControls {
             }
             set {
                 queryAndParametersContainer.Panel2Collapsed = !value;
-            }
-        }
-
-        public bool IsOutputPaneVisible {
-            get {
-                return _resultsViewController.IsOutputPaneVisible;
-            }
-            set {
-                _resultsViewController.IsOutputPaneVisible = value;
             }
         }
         #endregion IQueryWorkspace
@@ -238,8 +252,6 @@ namespace QueryWorkbenchUI.UserControls {
             IsDirty = isDirty;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(isDirty));
         }
-
-
         #endregion
 
 

@@ -46,9 +46,14 @@ namespace QueryWorkbenchUI.UserControls {
             OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
         }
 
-        public void ToggleOutputPane() {
-            splitContainer1.Panel2Collapsed = !splitContainer1.Panel2Collapsed;
+        public void CycleResultsTabForward() {
+            throw new NotImplementedException();
         }
+
+        public void CycleResultsTabBackward() {
+            throw new NotImplementedException();
+        }
+
         #endregion IResultsView
 
         public void SetDataSource(DataTable sourceDataTable) {
@@ -160,6 +165,8 @@ namespace QueryWorkbenchUI.UserControls {
         private void gridResults_CellEnter(object sender, DataGridViewCellEventArgs e) {
             writeCurrentCellValue(e);
         }
+
+     
         #endregion non-public
 
     }

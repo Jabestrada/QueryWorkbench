@@ -1,24 +1,28 @@
-﻿using QueryWorkbenchUI.Models;
+﻿using QueryWorkbenchUI.Extensions;
+using QueryWorkbenchUI.Models;
 using QueryWorkbenchUI.UserControls;
 using QueryWorkbenchUI.UserForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace QueryWorkbenchUI.Orchestration {
-    public class TabbedResultsViewController : IDirtyable {
+    public class TabbedResultsViewController : IDirtyable, ITabbedResultsView, IResultsView {
         private readonly TabControl _tabContainer;
         private ContextMenu _tabPageContextMenu;
         private string[] _resultPaneTitles;
 
         private const char TAB_TITLE_SEPARATOR_CHAR = '|';
 
-
+        #region IDirtyable
         public bool IsDirty { get; set; }
 
         public event EventHandler<DirtyChangedEventArgs> OnDirtyChanged;
+
+        #endregion IDirtyable
 
         public TabbedResultsViewController(TabControl tabContainer) {
             _tabContainer = tabContainer;
@@ -32,25 +36,34 @@ namespace QueryWorkbenchUI.Orchestration {
             }
         }
 
-
+        #region IResultsView
+        public event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
         public void ApplyFilter() {
             ActiveResultsView?.ApplyFilter();
         }
 
-        public void ToggleOutputPane() {
-            ActiveResultsView?.ToggleOutputPane();
-        }
-
         public bool IsOutputPaneVisible {
-            get { 
-               return ActiveResultsView?.IsOutputPaneVisible == true;
+            get {
+                return ActiveResultsView?.IsOutputPaneVisible == true;
             }
             set {
-                if (ActiveResultsView != null) { 
-                   ActiveResultsView.IsOutputPaneVisible = value;
+                if (ActiveResultsView != null) {
+                    ActiveResultsView.IsOutputPaneVisible = value;
                 }
             }
         }
+        #endregion IResultsView
+
+        #region ITabbedResultsView
+        public void CycleResultsTabForward() {
+            _tabContainer.SelectNextTab();
+        }
+
+        public void CycleResultsTabBackward() {
+            _tabContainer.SelectPreviousTab();
+
+        }
+        #endregion ITabbedResultsView
 
         public void BindResults(DataSet ds) {
             var tabPageIndex = 0;
@@ -173,6 +186,8 @@ namespace QueryWorkbenchUI.Orchestration {
             var pipeCharIndex = tabText.IndexOf(TAB_TITLE_SEPARATOR_CHAR);
             return pipeCharIndex > -1 ? tabText.Substring(0, pipeCharIndex).Trim() : tabText;
         }
+
+
 
 
         #endregion non-public
