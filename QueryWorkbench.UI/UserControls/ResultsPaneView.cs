@@ -12,7 +12,7 @@ namespace QueryWorkbenchUI.UserControls {
 
         public event EventHandler<ResultsCountChangedArgs> OnResultsCountChanged;
 
-        private ResultsGridColumnHeaderContextMenu _resultsGridColumnHeadersContextMenu;
+        private ResultsGridContextMenu _resultsGridContextMenu;
 
         #region ctors
         public ResultsPaneView() {
@@ -61,7 +61,7 @@ namespace QueryWorkbenchUI.UserControls {
                 txtOutput.ReadOnly = false;
             }
 
-            _resultsGridColumnHeadersContextMenu = new ResultsGridColumnHeaderContextMenu(gridResults);
+            _resultsGridContextMenu = new ResultsGridContextMenu(gridResults);
         }
 
 
@@ -103,21 +103,7 @@ namespace QueryWorkbenchUI.UserControls {
 
         private void gridResults_MouseClick(object sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right) {
-                var rightClickOnWhat = gridResults.HitTest(e.X, e.Y).Type;
-                if (rightClickOnWhat == DataGridViewHitTestType.ColumnHeader) {
-                    Debug.WriteLine("gridResults column header clicked. Ignoring...");
-                    return;
-                }
-                else {
-                    Debug.WriteLine("gridResults_MouseClick: show context menu");
-                }
-            }
-        }
-
-
-        private void gridResults_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
-            if (e.Button == MouseButtons.Right) {
-                _resultsGridColumnHeadersContextMenu.Show(gridResults, gridResults.PointToClient(Cursor.Position));
+                _resultsGridContextMenu.HandleRightMouseClick(sender, e);
             }
         }
 

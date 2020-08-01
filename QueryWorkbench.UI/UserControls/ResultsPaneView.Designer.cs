@@ -101,7 +101,6 @@
             this.gridResults.Size = new System.Drawing.Size(610, 116);
             this.gridResults.TabIndex = 0;
             this.gridResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridResults_CellEnter);
-            this.gridResults.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.gridResults_ColumnHeaderMouseClick);
             this.gridResults.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gridResults_MouseClick);
             // 
             // txtOutput
