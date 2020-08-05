@@ -163,7 +163,7 @@ namespace QueryWorkbenchUI.Orchestration {
 
         private void ResultsPane_OnResultsCountChanged(object sender, ResultsCountChangedArgs e) {
             var preText = getTabTitle(_tabContainer.TabPages[e.ContainerIndex]);
-            var rowsText = e.NewCount > 1 ? "rows" : "row";
+            var rowsText = e.NewCount == 1 ? "row" : "rows";
             _tabContainer.TabPages[e.ContainerIndex]
                          .Text = $"{preText} {TAB_TITLE_SEPARATOR_CHAR} {e.NewCount} {rowsText}";
 

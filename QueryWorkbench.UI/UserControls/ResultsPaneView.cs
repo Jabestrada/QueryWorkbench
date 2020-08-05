@@ -50,6 +50,8 @@ namespace QueryWorkbenchUI.UserControls {
         #endregion IResultsView
 
         public void SetDataSource(DataTable sourceDataTable) {
+            _oldCount = _sourceDataTable == null ? 0 : _sourceDataTable.DefaultView.Count;
+
             _sourceDataTable = sourceDataTable;
 
             gridResults.DataSource = _sourceDataTable;
@@ -66,6 +68,9 @@ namespace QueryWorkbenchUI.UserControls {
             }
 
             _resultsGridContextMenu = new ResultsGridContextMenu(this, gridResults);
+            
+            _newCount = _sourceDataTable.DefaultView.Count;
+            OnResultsCountChanged?.Invoke(this, new ResultsCountChangedArgs(_oldCount, _newCount, _containerIndex));
         }
 
 
