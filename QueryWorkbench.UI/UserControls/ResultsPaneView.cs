@@ -54,6 +54,7 @@ namespace QueryWorkbenchUI.UserControls {
 
             _sourceDataTable = sourceDataTable;
 
+            gridResults.Columns.Clear();
             gridResults.DataSource = _sourceDataTable;
             splitContainer1.Panel1Collapsed = _sourceDataTable.DefaultView.Count == 0;
             if (splitContainer1.Panel1Collapsed) {
