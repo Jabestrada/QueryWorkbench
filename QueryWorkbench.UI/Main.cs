@@ -381,6 +381,7 @@ namespace QueryWorkBench.UI {
             _appState = _appStateStore.LoadAppState(getAppStateFilename());
             if (_appState == null) {
                 mrutoolStripMenuItem.Enabled = false;
+                _appState = new AppState();
                 return;
             }
 
