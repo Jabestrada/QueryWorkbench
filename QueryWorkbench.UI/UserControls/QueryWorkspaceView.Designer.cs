@@ -25,11 +25,11 @@
         private void InitializeComponent() {
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.queryAndParametersContainer = new System.Windows.Forms.SplitContainer();
+            this.txtQuery = new System.Windows.Forms.RichTextBox();
+            this.txtParams = new System.Windows.Forms.RichTextBox();
             this.mainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.resultsTab = new System.Windows.Forms.TabControl();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtQuery = new System.Windows.Forms.RichTextBox();
-            this.txtParams = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.queryAndParametersContainer)).BeginInit();
             this.queryAndParametersContainer.Panel1.SuspendLayout();
             this.queryAndParametersContainer.Panel2.SuspendLayout();
@@ -64,9 +64,29 @@
             // queryAndParametersContainer.Panel2
             // 
             this.queryAndParametersContainer.Panel2.Controls.Add(this.txtParams);
-            this.queryAndParametersContainer.Size = new System.Drawing.Size(626, 144);
+            this.queryAndParametersContainer.Size = new System.Drawing.Size(626, 291);
             this.queryAndParametersContainer.SplitterDistance = 520;
             this.queryAndParametersContainer.TabIndex = 4;
+            // 
+            // txtQuery
+            // 
+            this.txtQuery.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtQuery.Location = new System.Drawing.Point(0, 0);
+            this.txtQuery.Name = "txtQuery";
+            this.txtQuery.Size = new System.Drawing.Size(520, 291);
+            this.txtQuery.TabIndex = 0;
+            this.txtQuery.Text = "SELECT * FROM Person\nSELECT * FROM Company";
+            this.txtQuery.TextChanged += new System.EventHandler(this.txtQuery_TextChanged);
+            // 
+            // txtParams
+            // 
+            this.txtParams.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtParams.Location = new System.Drawing.Point(0, 0);
+            this.txtParams.Name = "txtParams";
+            this.txtParams.Size = new System.Drawing.Size(102, 291);
+            this.txtParams.TabIndex = 0;
+            this.txtParams.Text = "";
+            this.txtParams.TextChanged += new System.EventHandler(this.txtParams_TextChanged);
             // 
             // mainSplitContainer
             // 
@@ -84,6 +104,7 @@
             // mainSplitContainer.Panel2
             // 
             this.mainSplitContainer.Panel2.Controls.Add(this.resultsTab);
+            this.mainSplitContainer.Panel2Collapsed = true;
             this.mainSplitContainer.Size = new System.Drawing.Size(626, 291);
             this.mainSplitContainer.SplitterDistance = 144;
             this.mainSplitContainer.TabIndex = 5;
@@ -105,26 +126,6 @@
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "Conn string";
-            // 
-            // txtQuery
-            // 
-            this.txtQuery.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtQuery.Location = new System.Drawing.Point(0, 0);
-            this.txtQuery.Name = "txtQuery";
-            this.txtQuery.Size = new System.Drawing.Size(520, 144);
-            this.txtQuery.TabIndex = 0;
-            this.txtQuery.Text = "SELECT * FROM Person\nSELECT * FROM Company";
-            this.txtQuery.TextChanged += new System.EventHandler(this.txtQuery_TextChanged);
-            // 
-            // txtParams
-            // 
-            this.txtParams.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtParams.Location = new System.Drawing.Point(0, 0);
-            this.txtParams.Name = "txtParams";
-            this.txtParams.Size = new System.Drawing.Size(102, 144);
-            this.txtParams.TabIndex = 0;
-            this.txtParams.Text = "";
-            this.txtParams.TextChanged += new System.EventHandler(this.txtParams_TextChanged);
             // 
             // QueryWorkspaceView
             // 
