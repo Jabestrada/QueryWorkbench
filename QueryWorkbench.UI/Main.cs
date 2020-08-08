@@ -28,6 +28,7 @@ namespace QueryWorkBench.UI {
         public Main() {
             InitializeComponent();
             initializeKeyboardShortcuts();
+
             loadAppState();
             refreshUIState();
 

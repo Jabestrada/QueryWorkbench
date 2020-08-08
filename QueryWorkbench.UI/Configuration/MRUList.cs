@@ -24,6 +24,8 @@ namespace QueryWorkbenchUI.Configuration {
         /// </summary>
         /// <param name="item"></param>
         public void AddItem(T item) {
+            if (item == null) return;
+
             if (_items.Count == 0) {
                 _items.Add(0, item);
                 return;

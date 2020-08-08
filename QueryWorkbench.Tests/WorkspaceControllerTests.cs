@@ -217,30 +217,32 @@ namespace QueryWorkbench.Tests {
         [TestMethod]
         public void itShouldToggleOutputPaneVisibility() {
             var sut = new Main();
-            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher());
+            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher())
+                                    .WithRunQueryAsync(false);
 
             sut.AddWorkspace("test", mockWorkspace);
 
             sut.AcceptKeys(Keys.Control | Keys.E);
 
-            // Output pane visible by default after command execution
-            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
-
-            // Toggle off
+            var isOutputPaneVisible = mockWorkspace.IsOutputPaneVisible;
+            // Toggle
             sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.O);
 
-            Assert.IsFalse(mockWorkspace.IsOutputPaneVisible);
+            Assert.AreNotEqual(isOutputPaneVisible, mockWorkspace.IsOutputPaneVisible);
 
-            // Toggle back on
+            isOutputPaneVisible = mockWorkspace.IsOutputPaneVisible;
+
+            // Toggle
             sut.AcceptKeys(Keys.Control | Keys.Shift | Keys.O);
 
-            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+            Assert.AreNotEqual(isOutputPaneVisible, mockWorkspace.IsOutputPaneVisible);
         }
 
         [TestMethod]
         public void itShouldToggleResultsPaneVisibility() {
             var sut = new Main();
-            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher());
+            var mockWorkspace = new MockQueryWorkspaceView(new MockCommandDispatcher())
+                                    .WithRunQueryAsync(false);
 
             sut.AddWorkspace("test", mockWorkspace);
 
@@ -257,7 +259,7 @@ namespace QueryWorkbench.Tests {
             // Toggle back on
             sut.AcceptKeys(Keys.Control | Keys.R);
 
-            Assert.IsTrue(mockWorkspace.IsOutputPaneVisible);
+            Assert.IsTrue(mockWorkspace.IsResultsPaneVisible);
         }
 
         [TestMethod]

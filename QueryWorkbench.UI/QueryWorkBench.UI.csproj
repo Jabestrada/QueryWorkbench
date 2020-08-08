@@ -71,6 +71,7 @@
     <Compile Include="Orchestration\ITabbedResultsView.cs" />
     <Compile Include="Orchestration\IWorkspaceController.cs" />
     <Compile Include="Orchestration\TabbedResultsViewController.cs" />
+    <Compile Include="Orchestration\WorkspaceState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\ContextMenus\MenuItemMetadata.cs" />

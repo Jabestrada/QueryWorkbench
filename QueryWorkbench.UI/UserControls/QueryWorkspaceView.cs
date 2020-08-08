@@ -4,9 +4,10 @@ using QueryWorkbenchUI.Models;
 using QueryWorkbenchUI.Orchestration;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -14,9 +15,13 @@ namespace QueryWorkbenchUI.UserControls {
     public partial class QueryWorkspaceView : UserControl, IQueryWorkspace, IDirtyable {
 
         private string _filename;
-        private readonly TabbedResultsViewController _resultsViewController;
+        private TabbedResultsViewController _resultsViewController;
         private IQueryWorkspaceContainer _workspaceContainer;
         private IDbCommandDispatcher _sqlCommandDispatcher;
+        private bool _runQueryAsync;
+        private RichTextBox _statusTextbox;
+
+        delegate void PostQueryCallback(DataSet data, Exception exc);
 
         public Workspace Model {
             get {
@@ -44,10 +49,11 @@ namespace QueryWorkbenchUI.UserControls {
 
         public QueryWorkspaceView() {
             InitializeComponent();
+            initializeResultsViewControler();
+            initializeStatusTextbox();
 
             IsDirty = true;
-            _resultsViewController = new TabbedResultsViewController(resultsTab);
-            _resultsViewController.OnDirtyChanged += resultsViewController_OnDirtyChanged;
+            _runQueryAsync = true;
         }
 
         public QueryWorkspaceView(Workspace workspaceModel) : this() {
@@ -95,6 +101,28 @@ namespace QueryWorkbenchUI.UserControls {
 
         #endregion inherited from IResultsView
 
+        private WorkspaceState _state;
+
+        public WorkspaceState State {
+            get {
+                return _state;
+            }
+            protected set {
+                _state = value;
+                var isReady = _state.IsReady();
+                txtConnString.Enabled = isReady;
+                txtQuery.Enabled = isReady;
+                txtParams.Enabled = isReady;
+                _statusTextbox.Visible = _state == WorkspaceState.Busy ||
+                                         _state == WorkspaceState.ReadyWithError;
+                _resultsViewController.Visible = _state == WorkspaceState.Ready;
+
+                if (!isReady) {
+                    mainSplitContainer.Panel2Collapsed = false;
+                }
+            }
+        }
+
         public virtual bool Save(IWorkspaceController workspaceController) {
             if (string.IsNullOrWhiteSpace(_filename)) {
                 var requestWriterArgs = new RequestNewFileArgs();
@@ -116,15 +144,27 @@ namespace QueryWorkbenchUI.UserControls {
             }
             IsDirty = false;
             OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(false));
-            //OnSaved?.Invoke(this, new OnSavedEventArgs(_filename));
             RaiseOnSavedEvent(_filename);
             return true;
         }
 
         public virtual void RunQuery() {
-            var data = SqlCommandDispatcher.RunQuery(getSQL(), getQueryParams());
-            _resultsViewController.BindResults(data);
-            mainSplitContainer.Panel2Collapsed = false;
+            if (State == WorkspaceState.Busy) return;
+
+            State = WorkspaceState.Busy;
+
+            var sql = getSQL();
+            var queryParams = getQueryParams();
+            _statusTextbox.Text = "Running query ...";
+            if (_runQueryAsync) {
+                ThreadStart starter = new ThreadStart(() => {
+                    runQueryInternal(sql, queryParams);
+                });
+                new Thread(starter).Start();
+            }
+            else {
+                runQueryInternal(sql, queryParams);
+            }
         }
 
         public virtual bool Close(IWorkspaceController workspaceController, bool force) {
@@ -156,6 +196,8 @@ namespace QueryWorkbenchUI.UserControls {
                 return !mainSplitContainer.Panel2Collapsed;
             }
             set {
+                if (!_state.IsReady()) return;
+
                 mainSplitContainer.Panel2Collapsed = !value;
             }
         }
@@ -165,6 +207,8 @@ namespace QueryWorkbenchUI.UserControls {
                 return !queryAndParametersContainer.Panel2Collapsed;
             }
             set {
+                if (!_state.IsReady()) return;
+
                 queryAndParametersContainer.Panel2Collapsed = !value;
             }
         }
@@ -188,11 +232,11 @@ namespace QueryWorkbenchUI.UserControls {
             var lineCommentTokenLength = SqlCommandDispatcher.LineCommentToken.Length;
             var caretPosAfterUpdate = txtQuery.SelectionStart - lineCommentTokenLength;
             var firstCharIndexOfCurrentLine = txtQuery.GetFirstCharIndexOfCurrentLine();
-            
+
             if ((firstCharIndexOfCurrentLine + lineCommentTokenLength - 1) >= txtQuery.Text.Length) return;
 
             var queryText = txtQuery.Text;
-            string substringFromCurrentIndex = queryText[firstCharIndexOfCurrentLine].ToString() + 
+            string substringFromCurrentIndex = queryText[firstCharIndexOfCurrentLine].ToString() +
                                                queryText[firstCharIndexOfCurrentLine + (lineCommentTokenLength - 1)].ToString();
             if (substringFromCurrentIndex != SqlCommandDispatcher.LineCommentToken) return;
 
@@ -207,6 +251,7 @@ namespace QueryWorkbenchUI.UserControls {
         public event EventHandler<OnSavedEventArgs> OnSaved;
 
         public bool IsDirty { get; protected set; }
+
         #endregion
 
         protected virtual void RaiseOnSavedEvent(string filename) {
@@ -232,9 +277,13 @@ namespace QueryWorkbenchUI.UserControls {
             _workspaceContainer = container;
             return this;
         }
+        public QueryWorkspaceView WithRunQueryAsync(bool runQueryAsync) {
+            _runQueryAsync = runQueryAsync;
+            return this;
+        }
         #endregion
 
-        #region Misc non-public
+        #region query execution
         private string getSQL() {
             return string.IsNullOrWhiteSpace(txtQuery.SelectedText) ? txtQuery.Text : txtQuery.SelectedText;
         }
@@ -250,6 +299,56 @@ namespace QueryWorkbenchUI.UserControls {
                 paramsDictionary.Add(paramPair[0], paramPair[1]);
             }
             return paramsDictionary;
+        }
+
+        private void runQueryInternal(string sql, Dictionary<string, object> queryParams) {
+            DataSet data = null;
+            try {
+                data = SqlCommandDispatcher.RunQuery(sql, queryParams);
+                if (InvokeRequired) {
+                    Invoke(new PostQueryCallback(onPostQuery), new object[] { data, null });
+                }
+                else {
+                    onPostQuery(data, null);
+                }
+            }
+            catch (Exception exc) {
+                if (InvokeRequired) {
+                    Invoke(new PostQueryCallback(onPostQuery), new object[] { null, exc });
+                }
+                else {
+                    onPostQuery(null, exc);
+                }
+            }
+        }
+        private void onPostQuery(DataSet data, Exception exc) {
+            if (exc == null) {
+                _resultsViewController.BindResults(data);
+                mainSplitContainer.Panel2Collapsed = false;
+                State = WorkspaceState.Ready;
+            }
+            else {
+                _statusTextbox.Text = $"Error running query: {exc.Message}";
+                _statusTextbox.SelectAll();
+                _statusTextbox.SelectionColor = Color.Red;
+                State = WorkspaceState.ReadyWithError;
+            }
+        }
+
+        #endregion query execution
+
+        #region Misc non-public
+        private void initializeResultsViewControler() {
+            _resultsViewController = new TabbedResultsViewController(resultsTab);
+            _resultsViewController.OnDirtyChanged += resultsViewController_OnDirtyChanged;
+        }
+
+        private void initializeStatusTextbox() {
+            _statusTextbox = new RichTextBox();
+            _statusTextbox.Dock = DockStyle.Fill;
+            _statusTextbox.ReadOnly = true;
+            _statusTextbox.Visible = false;
+            mainSplitContainer.Panel2.Controls.Add(_statusTextbox);
         }
 
         private Workspace buildWorkspaceModel() {

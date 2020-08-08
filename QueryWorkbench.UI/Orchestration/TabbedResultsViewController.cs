@@ -55,6 +55,15 @@ namespace QueryWorkbenchUI.Orchestration {
         #endregion IResultsView
 
         #region ITabbedResultsView
+        public bool Visible {
+            get {
+                return _tabContainer.Visible;
+            }
+            set {
+                _tabContainer.Visible = value;
+            }
+        }
+
         public void CycleResultsTabForward() {
             _tabContainer.SelectNextTab();
         }
@@ -94,7 +103,6 @@ namespace QueryWorkbenchUI.Orchestration {
             }
 
         }
-
 
         private void bindContextMenu() {
             _tabContainer.MouseUp += _tabContainer_MouseUp;
