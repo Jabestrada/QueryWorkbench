@@ -155,7 +155,9 @@ namespace QueryWorkbenchUI.UserControls {
 
             var sql = getSQL();
             var queryParams = getQueryParams();
-            _statusTextbox.Text = "Running query ...";
+            SqlCommandDispatcher.ConnectionString = txtConnString.Text;
+
+            _statusTextbox.Text = "Running query...";
             if (_runQueryAsync) {
                 ThreadStart starter = new ThreadStart(() => {
                     runQueryInternal(sql, queryParams);
