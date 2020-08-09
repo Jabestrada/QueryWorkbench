@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.SqlServer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryWorkbench.Tests", "QueryWorkbench.Tests\QueryWorkbench.Tests.csproj", "{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlParser.Infrastructure", "SqlParser.Infrastructure\SqlParser.Infrastructure.csproj", "{70EA8591-1EA3-42B2-B4F9-2A7F2E826393}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74B25560-2C3A-40FA-B1E2-13A8E7EE6592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70EA8591-1EA3-42B2-B4F9-2A7F2E826393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70EA8591-1EA3-42B2-B4F9-2A7F2E826393}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70EA8591-1EA3-42B2-B4F9-2A7F2E826393}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70EA8591-1EA3-42B2-B4F9-2A7F2E826393}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

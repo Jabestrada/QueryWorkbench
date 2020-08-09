@@ -57,6 +57,9 @@
     <Compile Include="Mocks\MockQueryWorkspaceView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="SqlParser.Infrastructure\TokenMatcherTests.cs" />
+    <Compile Include="SqlParser.Infrastructure\SentenceTokenizerTests.cs" />
+    <Compile Include="Tokenizing2Tests\Tokernizer2Tests.cs" />
     <Compile Include="WorkspaceControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,7 +75,12 @@
       <Project>{4b5d1db5-2353-4a41-9714-873d24f2dc33}</Project>
       <Name>QueryWorkbench.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SqlParser.Infrastructure\SqlParser.Infrastructure.csproj">
+      <Project>{70ea8591-1ea3-42b2-b4f9-2a7f2e826393}</Project>
+      <Name>SqlParser.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

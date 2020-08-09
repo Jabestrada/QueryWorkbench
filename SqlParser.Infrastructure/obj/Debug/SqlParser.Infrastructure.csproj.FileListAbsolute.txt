@@ -1,0 +1,6 @@
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\bin\Debug\SqlParser.Infrastructure.dll
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\bin\Debug\SqlParser.Infrastructure.pdb
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\obj\Debug\SqlParser.Infrastructure.csprojAssemblyReference.cache
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\obj\Debug\SqlParser.Infrastructure.csproj.CoreCompileInputs.cache
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\obj\Debug\SqlParser.Infrastructure.dll
+C:\JABE\JABELabs\QueryWorkbench\SqlParser.Infrastructure\obj\Debug\SqlParser.Infrastructure.pdb
