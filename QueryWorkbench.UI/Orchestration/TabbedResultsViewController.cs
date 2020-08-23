@@ -14,6 +14,11 @@ namespace QueryWorkbenchUI.Orchestration {
         private ContextMenu _tabPageContextMenu;
         private string[] _resultPaneTitles;
 
+        private MenuItem _menuItemSwitchNamesWithFirstTab;
+        private MenuItem _menuItemSwitchNamesWithLeftTab;
+        private MenuItem _menuItemSwitchNamesWithRightTab;
+        private MenuItem _menuItemSwitchNamesWithLastTab;
+
         private const char TAB_TITLE_SEPARATOR_CHAR = '|';
 
         #region IDirtyable
@@ -79,8 +84,7 @@ namespace QueryWorkbenchUI.Orchestration {
             foreach (DataTable dt in ds.Tables) {
                 if (_tabContainer.TabCount > tabPageIndex) {
                     reuseTabPage(dt, tabPageIndex);
-                }
-                else {
+                } else {
                     createNewTabPage(dt, tabPageIndex);
                 }
                 tabPageIndex++;
@@ -110,6 +114,18 @@ namespace QueryWorkbenchUI.Orchestration {
             _tabPageContextMenu = new ContextMenu();
             var renameTabMenuItem = new MenuItem("Rename tab", new EventHandler(renameTabHandler));
             _tabPageContextMenu.MenuItems.Add(renameTabMenuItem);
+
+            _menuItemSwitchNamesWithFirstTab = new MenuItem("Swap names with first tab", swapNamesWithFirstTab);
+            _tabPageContextMenu.MenuItems.Add(_menuItemSwitchNamesWithFirstTab);
+
+            _menuItemSwitchNamesWithLeftTab = new MenuItem("Swap names with tab to the left", swapNamesWithLeftTab);
+            _tabPageContextMenu.MenuItems.Add(_menuItemSwitchNamesWithLeftTab);
+
+            _menuItemSwitchNamesWithRightTab = new MenuItem("Swap names with tab to the right", swapNamesWithRightTab);
+            _tabPageContextMenu.MenuItems.Add(_menuItemSwitchNamesWithRightTab);
+
+            _menuItemSwitchNamesWithLastTab = new MenuItem("Swap names with last tab", swapNamesWithLastTab);
+            _tabPageContextMenu.MenuItems.Add(_menuItemSwitchNamesWithLastTab);
         }
 
         private void _tabContainer_MouseUp(object sender, MouseEventArgs e) {
@@ -118,6 +134,12 @@ namespace QueryWorkbenchUI.Orchestration {
                     Rectangle r = _tabContainer.GetTabRect(i);
                     if (r.Contains(e.Location)) {
                         _tabContainer.SelectedIndex = i;
+                        
+                        _menuItemSwitchNamesWithFirstTab.Enabled = i > 0;
+                        _menuItemSwitchNamesWithLeftTab.Enabled = i > 0;
+                        _menuItemSwitchNamesWithRightTab.Enabled = i < _tabContainer.TabCount - 1;
+                        _menuItemSwitchNamesWithLastTab.Enabled = i < _tabContainer.TabCount - 1;
+
                         _tabPageContextMenu.Show(_tabContainer, e.Location);
                         break;
                     }
@@ -130,6 +152,51 @@ namespace QueryWorkbenchUI.Orchestration {
             if (textInputDialog.ShowDialog() == DialogResult.OK) {
                 setTabTitle(_tabContainer.SelectedTab, textInputDialog.Input);
             }
+        }
+
+
+        #region Swap tab names
+        private void swapNamesWithFirstTab(object sender, EventArgs e) {
+            if (_tabContainer.SelectedTab == _tabContainer.TabPages[0]) {
+                return;
+            }
+
+            swapTabNames(_tabContainer.SelectedTab, _tabContainer.TabPages[0]);
+        }
+        private void swapNamesWithLeftTab(object sender, EventArgs e) {
+            if (_tabContainer.SelectedTab == _tabContainer.TabPages[0]) {
+                return;
+            }
+
+            var tabToLeft = _tabContainer.TabPages[_tabContainer.TabPages.IndexOf(_tabContainer.SelectedTab) - 1];
+            swapTabNames(_tabContainer.SelectedTab, tabToLeft);
+        }
+
+        private void swapNamesWithRightTab(object sender, EventArgs e) {
+            if (_tabContainer.SelectedTab == _tabContainer.TabPages[_tabContainer.TabPages.Count - 1]) {
+                return;
+            }
+
+            var tabToRight = _tabContainer.TabPages[_tabContainer.TabPages.IndexOf(_tabContainer.SelectedTab) + 1];
+            swapTabNames(_tabContainer.SelectedTab, tabToRight);
+        }
+
+        private void swapNamesWithLastTab(object sender, EventArgs e) {
+            var lastTab = _tabContainer.TabPages[_tabContainer.TabPages.Count - 1];
+            if (_tabContainer.SelectedTab == lastTab) {
+                return;
+            }
+
+            swapTabNames(_tabContainer.SelectedTab, lastTab);
+        }
+        #endregion Swap tab names
+
+
+        private void swapTabNames(TabPage tab1, TabPage tab2) {
+            var tab1Text = tab1.Text;
+            tab1.Text = tab2.Text;
+            tab2.Text = tab1Text;
+            OnDirtyChanged?.Invoke(this, new DirtyChangedEventArgs(true));
         }
 
         private void createNewTabPage(DataTable sourceDataTable, int tabPageIndex) {
